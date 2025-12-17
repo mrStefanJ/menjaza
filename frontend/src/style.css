@@ -1,0 +1,230 @@
+body{
+  margin: 0;
+}
+
+#app {
+  width: 100%;
+}
+
+main {
+  background: #e5f8fe;
+  height: 100svh;
+  padding: 10px;
+}
+
+ul {
+  padding: 0;
+  list-style-type: none;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  margin: 0;
+}
+
+p,a {
+  color: #333;
+}
+
+a{
+  text-decoration: none;
+}
+
+
+/* =========================================
+   MOBILE FIRST — BASE STYLES
+   ========================================= */
+.auth {
+  width: 80%;
+  max-width: 380px;
+  margin: 40px auto;
+  padding: 22px;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.auth h2 {
+  text-align: center;
+  margin-bottom: 5px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.auth input {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  transition: border-color 0.2s ease;
+  width: 94%;
+}
+
+.auth input:focus {
+  border-color: #4a8af4;
+  outline: none;
+}
+
+.auth button {
+  padding: 12px;
+  background: #4a8af4;
+  border: none;
+  color: #fff;
+  font-size: 17px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.auth button:disabled {
+  background: #9ebdf6;
+  cursor: not-allowed;
+}
+
+.auth button:hover:not(:disabled) {
+  background: #3f7ae0;
+}
+
+.msg {
+  min-height: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #d9534f;
+}
+
+/* INPUT WRAPPER za show/hide password */
+.input-wrapper {
+  position: relative;
+  width: 86%;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 12px 42px 12px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  transition: border-color 0.2s;
+}
+
+.input-wrapper input:focus {
+  border-color: #4a8af4;
+}
+
+.icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  display: flex;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.icon:hover {
+  opacity: 1;
+}
+
+
+/* Album Page */
+
+.album-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin: 15px 0px;
+}
+
+.album-item h3{
+  margin-left: 10px;
+}
+.album-item a {
+  margin-right: 10px;
+  text-decoration: none;
+  color: #000000;
+}
+
+.album-item a:hover{
+  color: #ff7e00;
+}
+
+.album-back:hover{
+color: #ff7e00;
+}
+
+.album-btn{
+  margin-top: 10px;
+  border-radius: 4px;
+  padding: 8px 14px;
+  background: #555;
+  color: #ffffff;
+  border: 0;
+}
+
+.album-btn:hover {
+  background: #555;
+  color: #ff7e00;
+  cursor: pointer;
+}
+
+.album-btn__diasbled {
+  cursor: no-drop;
+}
+
+/* =========================================
+   TABLET — from 480px and above
+   ========================================= */
+@media (min-width: 480px) {
+  .auth {
+    margin: 60px auto;
+    padding: 26px;
+  }
+
+  .auth h2 {
+    font-size: 24px;
+  }
+
+  .auth button {
+    font-size: 18px;
+  }
+}
+
+
+/* =========================================
+   DESKTOP — from 768px and above
+   ========================================= */
+@media (min-width: 768px) {
+  .auth {
+    max-width: 420px;
+    padding: 30px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.10);
+  }
+
+  .auth h2 {
+    font-size: 26px;
+  }
+
+  .input-wrapper {
+    width: 87%;
+  }
+
+  .auth input,
+  .input-wrapper input {
+    font-size: 17px;
+  }
+}
+
+
+/* =========================================
+   LARGE DESKTOP — from 1024px and above
+   ========================================= */
+@media (min-width: 1024px) {
+  .auth {
+    margin-top: 80px;
+    max-width: 450px;
+  }
+}
