@@ -9,6 +9,12 @@ const controller = require("../controllers/users.controller");
 router.get("/me", auth, controller.getMe);
 
 /**
+ * GET /api/users/all
+ * Vrati spisak svih user-a
+ */
+
+router.get("/", auth, controller.getAllUsers);
+/**
  * PUT /api/users/me
  * Update osnovnih podataka profila
  */

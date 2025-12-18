@@ -119,8 +119,7 @@ export default {
 
 .album-btn--disabled,
 .album-btn:disabled {
-  cursor: not-allowed; /* 👈 no-cursor */
-  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 @media (min-width: 480px) {

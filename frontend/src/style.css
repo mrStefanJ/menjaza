@@ -156,7 +156,7 @@ a{
 color: #ff7e00;
 }
 
-.album-btn{
+/* .album-btn{
   margin-top: 10px;
   border-radius: 4px;
   padding: 8px 14px;
@@ -169,11 +169,7 @@ color: #ff7e00;
   background: #555;
   color: #ff7e00;
   cursor: pointer;
-}
-
-.album-btn__diasbled {
-  cursor: no-drop;
-}
+} */
 
 /* =========================================
    TABLET — from 480px and above

@@ -8,6 +8,18 @@ exports.getMe = async (req, res) => {
 };
 
 /**
+ * GET /all
+ */
+exports.getAllUsers = async(req, res) => {
+  try {
+    const users = await User.find().select("firstName lastName userName createdAt");
+    res.json(users); 
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch users!"});
+  }
+}
+
+/**
  * PUT /me
  */
 exports.updateMe = async (req, res) => {
