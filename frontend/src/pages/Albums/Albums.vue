@@ -9,7 +9,7 @@
       <li v-for="album in paginatedAlbums" :key="album._id" class="album-item">
         <h3>{{ album.title }}</h3>
         <router-link
-          :to="{ name: 'album-details', params: { id: album._id } }"
+          :to="{ name: 'album-details', params: { id: album._id }, query: $route.query }"
           class="details-link"
         >
           Details
@@ -21,7 +21,7 @@
       :current-page="currentPage"
       :total-items="albums.length"
       :page-size="pageSize"
-      @update:page="currentPage = $event"
+      @update:page="onPageChange"
     />
   </section>
 </template>
@@ -39,7 +39,7 @@ export default {
       loading: false,
       error: null,
       currentPage: 1,
-      pageSize: 5,
+      pageSize: 10,
     };
   },
 
@@ -52,10 +52,32 @@ export default {
   },
 
   mounted() {
+    this.syncPageFromRoute();
     this.fetchAlbums();
   },
 
+  watch: {
+    "$route.query.page": {
+      imemediate: true,
+      handler() {
+        this.syncPageFromRoute();
+      }
+    }
+  },
+
   methods: {
+    syncPageFromRoute() {
+    const page = Number(this.$route.query.page);
+    this.currentPage = page && page > 0 ? page : 1;
+  },
+    onPageChange(page) {
+      this.currentPage = page;
+      this.$router.push({
+        name: "albums",
+        query: { page },
+      });
+    },
+
     async fetchAlbums() {
       this.loading = true;
       try {

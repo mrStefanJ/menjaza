@@ -1,7 +1,7 @@
 <template>
   <div class="auth">
     <h2>Register</h2>
-
+    
     <input v-model="firstName" type="text" placeholder="First Name" @input="validateText('firstName')" />
     <input v-model="lastName" type="text" placeholder="Last Name" @input="validateText('lastName')" />
     <input v-model="userName" type="text" placeholder="User Name" />
@@ -68,7 +68,9 @@ export default {
       showPassword: false,
       showConfirmPassword: false,
       albums: [],
-      message: ""
+      message: "",
+      country: "",
+      city: "",
     };
   },
 

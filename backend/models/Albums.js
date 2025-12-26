@@ -11,7 +11,7 @@ const AlbumSchema = new mongoose.Schema(
     region: { type: String },
     franchise: { type: String }, // Disney, FIFA, Marvel
     type: { type: String, default: "sticker_album" },
-    cover: {type: String }
+    cover: { type: String },
   },
   { timestamps: true }
 );

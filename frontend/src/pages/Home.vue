@@ -30,6 +30,7 @@
             <span class="home__users-name">
               {{ user.userName }}
             </span>
+            <span class="home__user-country">{{ user.country }}</span>
           </li>
         </ul>
 
@@ -79,7 +80,11 @@ export default {
           throw new Error("Failed to fetch users");
         }
 
-        this.users = await response.json();
+        const allUsers = await response.json();
+
+        const currentUserName = localStorage.getItem("userName");
+
+        this.users = allUsers.filter(user => user.userName !== currentUserName);
         console.log(this.users);
       } catch (err) {
         console.error(err);
@@ -146,6 +151,11 @@ export default {
 
 .home__users-name {
   font-weight: 600;
+}
+
+.home__user-country{
+  font-weight: 500;
+  text-transform: uppercase;
 }
 
 .home__users-empty {

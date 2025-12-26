@@ -75,6 +75,10 @@ export default {
 button {
   padding: 6px 12px;
   cursor: pointer;
+  background: #555;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
 }
 
 button:hover {
@@ -83,7 +87,7 @@ button:hover {
 
 button.active {
   font-weight: bold;
-  background: #333;
+  background: #9a9a9a;
   color: #fff;
 }
 

@@ -17,18 +17,25 @@ exports.register = async (req, res) => {
 
   if (!passwordRegex.test(password))
     return res.status(400).json({ message: "Weak password" });
-
+  // provera da li email vec postoji
   const exists = await User.findOne({ email });
   if (exists) return res.status(400).json({ message: "Email already exists" });
 
   const hashed = await bcrypt.hash(password, 10);
+
+  let role = "user";
+  const count = await User.countDocuments();
+  if(count === 0) role = "admin";
 
   await User.create({
     firstName,
     lastName,
     userName,
     email,
-    password: hashed
+    password: hashed,
+    country: "",
+    city: "",
+    role
   });
 
   res.json({ message: "Registered successfully" });

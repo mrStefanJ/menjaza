@@ -1,6 +1,10 @@
 <template>
   <section class="album-details-page">
-    <router-link to="/albums" class="album-back">← Back to albums</router-link>
+    <router-link
+      :to="{ name: 'albums', query: $route.query }"
+      class="album-back"
+      >← Back to albums</router-link
+    >
 
     <div v-if="loading">Loading album...</div>
     <div v-else-if="error">{{ error }}</div>
@@ -70,7 +74,9 @@ export default {
 
         this.album = albumRes.data;
 
-        this.isAdded = userRes.data.albums?.includes(this.album._id);
+        this.isAdded = userRes.data.albums?.some(
+          (a) => a.albumId === this.album._id
+        );
       } catch (err) {
         console.error(err);
         this.error = err.response?.data?.message || "Failed to fetch album";

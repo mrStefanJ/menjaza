@@ -18,7 +18,7 @@ export default {
     return {
       email: "",
       password: "",
-      message: ""
+      message: "",
     };
   },
   setup() {
@@ -30,15 +30,26 @@ export default {
       try {
         const res = await api.post("/auth/login", {
           email: this.email,
-          password: this.password
+          password: this.password,
         });
+
+        // Sačuvaj token
         this.auth.login(res.data.token);
-        await this.auth.fetchUser(); // odmah fetch user
+
+        // Fetch korisnika u store
+        await this.auth.fetchUser();
+
+        // Sada je korisnik u store-u
+        localStorage.setItem("userId", this.auth.user._id);
+        localStorage.setItem("userName", this.auth.user.userName);
+        localStorage.setItem("user", JSON.stringify(this.auth.user));
+
+        // Redirekcija
         this.$router.push("/home");
       } catch (err) {
         this.message = err.response?.data?.message || "Invalid credentials";
       }
-    }
-  }
+    },
+  },
 };
 </script>

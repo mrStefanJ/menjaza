@@ -1,10 +1,11 @@
 {
   "name": "auth-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Backend aplikacija sa automatskim reload-om",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
@@ -17,5 +18,13 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.0.1",
     "nodemailer": "^7.0.11"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "nodemonConfig": {
+    "watch": ["index.js", "routes/", "models/"],
+    "ext": "js,json",
+    "ignore": ["node_modules/"]
   }
 }

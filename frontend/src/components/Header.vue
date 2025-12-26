@@ -7,7 +7,8 @@
         <li><router-link to="/albums" @click="closeMenu">Albums</router-link></li>
         <li><router-link to="/message" @click="closeMenu">Message</router-link></li>
         <li><router-link to="/exchange" @click="closeMenu">Exchange</router-link></li>
-        <li><router-link to="/help" @click="closeMenu">Help</router-link></li>
+        <li><router-link to="/collections" @click="closeMenu">Collections</router-link></li>
+        <!--<li><router-link to="/help" @click="closeMenu">Help</router-link></li>-->
         <li><router-link to="/contact" @click="closeMenu">Contact</router-link></li>
       </ul>
     </nav>
@@ -45,7 +46,7 @@
 
 
 <script>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useAuthStore } from "@/store/auth";
 import { useRouter } from "vue-router";
 
@@ -69,6 +70,10 @@ export default {
       isProfileOpen.value = false;
       router.push("/");
     }
+
+    watch(isOpen, (open) => {
+      document.body.style.overflow = open ? "hidden" : "";
+    });
 
     return {
       isOpen,
@@ -138,13 +143,10 @@ export default {
   top: 100%;
   left: 0;
   width: 100%;
-
   background-color: #333;
-
   max-height: 0;
   overflow: hidden;
   opacity: 0;
-
   transition: max-height 0.3s ease, opacity 0.3s ease;
   z-index: 50;
 }
@@ -191,6 +193,7 @@ export default {
   background-color: #444;
   margin-top: 10px;
   border-radius: 4px;
+  z-index: 1;
 }
 
 .profile-menu li {

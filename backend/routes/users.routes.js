@@ -32,4 +32,11 @@ router.put("/me/albums", auth, controller.addAlbum);
  */
 router.delete("/me/albums/:albumId", auth, controller.removeAlbum);
 
+// PUT /api/users/me/albums/:albumId/stickers
+router.put(
+  "/me/albums/:albumId/stickers",
+  auth,
+  controller.saveUserStickers
+);
+
 module.exports = router;
