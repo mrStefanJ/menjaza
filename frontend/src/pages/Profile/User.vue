@@ -3,19 +3,78 @@
     <h1>My profile</h1>
 
     <form @submit.prevent="updateProfile" class="profile-form">
-      <div class="form-group">
+      <div
+        class="form-group"
+        :class="{
+          error: errors.firstName && touched.firstName,
+          success:
+            !errors.firstName &&
+            touched.firstName &&
+            form.firstName !== originalForm.firstName,
+        }"
+      >
         <label>First name</label>
-        <input v-model="form.firstName" type="text" required />
+
+        <input
+          v-model="form.firstName"
+          type="text"
+          @blur="
+            touched.firstName = true;
+            validateField('firstName');
+          "
+        />
+
+        <small v-if="errors.firstName && touched.firstName">
+          {{ errors.firstName }}
+        </small>
       </div>
 
-      <div class="form-group">
+      <div
+        class="form-group"
+        :class="{
+          error: errors.lastName && touched.lastName,
+          success:
+            !errors.lastName &&
+            touched.lastName &&
+            form.lastName !== originalForm.lastName,
+        }"
+      >
         <label>Last name</label>
-        <input v-model="form.lastName" type="text" required />
+        <input
+          v-model="form.lastName"
+          type="text"
+          @blur="
+            touched.lastName = true;
+            validateField('lastName');
+          "
+        />
+        <small v-if="errors.lastName && touched.lastName">
+          {{ errors.lastName }}
+        </small>
       </div>
 
-      <div class="form-group">
+      <div
+        class="form-group"
+        :class="{
+          error: errors.userName && touched.userName,
+          success:
+            !errors.userName &&
+            touched.userName &&
+            form.userName !== originalForm.userName,
+        }"
+      >
         <label>Username</label>
-        <input v-model="form.userName" type="text" required />
+        <input
+          v-model="form.userName"
+          type="text"
+          @blur="
+            touched.lastName = true;
+            validateField('lastName');
+          "
+        />
+        <small v-if="errors.userName && touched.userName">
+          {{ errors.userName }}
+        </small>
       </div>
 
       <div class="form-group">
@@ -23,7 +82,16 @@
         <input v-model="form.email" type="email" disabled />
       </div>
 
-      <div class="form-group">
+      <div
+        class="form-group"
+        :class="{
+          error: errors.country && touched.country,
+          success:
+            !errors.country &&
+            touched.country &&
+            form.country !== originalForm.country,
+        }"
+      >
         <label>Country</label>
         <select v-model="form.country">
           <option value="">-- Select country --</option>
@@ -31,6 +99,9 @@
             {{ c }}
           </option>
         </select>
+        <small v-if="errors.country && touched.country">
+          {{ errors.country }}
+        </small>
       </div>
 
       <div class="form-group">
@@ -38,6 +109,9 @@
         <input v-model="form.city" type="text" />
       </div>
 
+      <p v-if="message" class="form-message">
+        {{ message }}
+      </p>
       <button type="submit" :disabled="loading">
         {{ loading ? "Saving..." : "Save changes" }}
       </button>
@@ -50,6 +124,8 @@ import { reactive, ref, onMounted } from "vue";
 import { api } from "@/services/api";
 
 const loading = ref(false);
+const submitted = ref(false);
+const message = ref("");
 
 const countries = [
   "Srbija",
@@ -69,13 +145,99 @@ const form = reactive({
   country: "",
 });
 
+const touched = reactive({
+  firstName: false,
+  lastName: false,
+  userName: false,
+  city: false,
+  country: false,
+});
+
+const errors = reactive({
+  firstName: "",
+  lastName: "",
+  userName: "",
+  city: "",
+  country: "",
+});
+
+// originalna kopija – služi za poređenje
+const originalForm = reactive({});
+
+/* =========================
+   FETCH USER
+========================= */
 const fetchMe = async () => {
   const { data } = await api.get("/users/me");
+
   Object.assign(form, data);
+  Object.assign(originalForm, data);
 };
 
+const validateField = (field) => {
+  switch (field) {
+    case "firstName":
+      errors.firstName = form.firstName.trim() ? "" : "First name is required";
+      break;
+
+    case "lastName":
+      errors.lastName = form.lastName.trim() ? "" : "Last name is required";
+      break;
+
+    case "userName":
+      errors.userName = form.userName.trim() ? "" : "Username is required";
+      break;
+
+    case "country":
+      errors.country = form.country ? "" : "Country is required";
+      break;
+  }
+};
+
+/* =========================
+   VALIDACIJA
+========================= */
+const validateForm = () => {
+  validateField("firstName");
+  validateField("lastName");
+  validateField("userName");
+  validateField("country");
+
+  return !Object.values(errors).some(Boolean);
+};
+
+/* =========================
+   PROVERA PROMENA
+========================= */
+const hasChanges = () => {
+  return (
+    form.firstName !== originalForm.firstName ||
+    form.lastName !== originalForm.lastName ||
+    form.userName !== originalForm.userName ||
+    form.city !== originalForm.city ||
+    form.country !== originalForm.country
+  );
+};
+
+/* =========================
+   UPDATE PROFILE
+========================= */
 const updateProfile = async () => {
+  submitted.value = true;
+  message.value = "";
+
+  // obeleži sva polja kao touched
+  Object.keys(touched).forEach((key) => (touched[key] = true));
+
+  if (!validateForm()) return;
+
+  if (!hasChanges()) {
+    message.value = "You don't have change in your data.";
+    return;
+  }
+
   loading.value = true;
+
   try {
     const payload = {
       firstName: form.firstName,
@@ -86,10 +248,13 @@ const updateProfile = async () => {
     };
 
     const { data } = await api.put("/users/me", payload);
+
     Object.assign(form, data);
-    alert("Profile updated successfully");
+    Object.assign(originalForm, data);
+
+    message.value = "Profile updated successfully";
   } catch (err) {
-    alert("Failed to update profile");
+    message.value = err.response?.data?.message || "Failed to update profile";
   } finally {
     loading.value = false;
   }
@@ -97,3 +262,118 @@ const updateProfile = async () => {
 
 onMounted(fetchMe);
 </script>
+
+<style>
+.profile-page {
+  padding: 16px;
+  max-width: 100%;
+}
+
+.profile-page h1 {
+  font-size: 1.4rem;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+  color: #555;
+}
+
+.form-group input,
+.form-group select {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.form-group.error input,
+.form-group.error select {
+  border-color: #dc3545;
+}
+
+.form-group.success input,
+.form-group.success select {
+  border-color: #28a745;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #007bff;
+}
+
+.form-group small {
+  margin-top: 4px;
+  font-size: 0.75rem;
+  color: #dc3545;
+}
+
+button[type="submit"] {
+  margin-top: 12px;
+  padding: 12px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+}
+
+button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (min-width: 768px) {
+  .profile-page {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+
+  .profile-page h1 {
+    font-size: 1.6rem;
+  }
+
+  .profile-form {
+    gap: 18px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .profile-page {
+    max-width: 720px;
+    padding: 32px;
+  }
+
+  .profile-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .form-group:nth-child(4), /* email */
+  .form-group:nth-child(7) {
+    /* city */
+    grid-column: span 2;
+  }
+
+  button[type="submit"] {
+    grid-column: span 2;
+    justify-self: flex-end;
+    width: 200px;
+  }
+}
+</style>
