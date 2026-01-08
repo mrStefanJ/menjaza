@@ -89,3 +89,17 @@ export default {
   },
 };
 </script>
+
+<style>
+
+  .collection-list li {
+        display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .collection-list li a:hover {
+    color: #ff7e00;
+  }
+</style>

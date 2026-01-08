@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section class="stickers__missing">
     <h1>Sličice koje mi fale</h1>
 
     <div v-if="!album">Učitavanje...</div>
@@ -14,16 +14,18 @@
       />
     </div>
 
-    <button v-if="album" @click="save">Sačuvaj</button>
+    <button v-if="album" @click="save" class="btn__save">Sačuvaj</button>
+    <ScrollToTop />
   </section>
 </template>
 
 <script>
+import ScrollToTop from "@/components/Button/ScrollToTop.vue";
 import StickerCard from "@/components/StickerCard.vue";
 
 export default {
   name: "CollectionMissing",
-  components: { StickerCard },
+  components: { StickerCard, ScrollToTop },
 
   data() {
     return {

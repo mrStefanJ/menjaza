@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section class="stickers__owned">
     <h1>Sličice koje mi fale</h1>
 
     <div class="stickers-grid">
@@ -12,16 +12,18 @@
       />
     </div>
 
-    <button @click="save">Sačuvaj</button>
+    <button @click="save" class="btn__save">Sačuvaj</button>
+    <ScrollToTop />
   </section>
 </template>
 
 <script>
+import ScrollToTop from "@/components/Button/ScrollToTop.vue";
 import StickerCard from "@/components/StickerCard.vue";
 
 export default {
   name: "CollectionOwned",
-  components: { StickerCard },
+  components: { StickerCard, ScrollToTop },
 
   data() {
     return {

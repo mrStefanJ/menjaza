@@ -6,29 +6,38 @@
     <div v-else-if="error">{{ error }}</div>
 
     <div v-if="album">
-      <h3>Nedostaju</h3>
-      <div class="stickers-flex">
-        <StickerCard v-for="n in album.missingStickers" :key="n" :number="n" />
+      <div class="collection-details__missing">
+        <h3>Nedostaju</h3>
+        <div class="stickers-flex">
+          <StickerCard
+            v-for="n in album.missingStickers"
+            :key="n"
+            :number="n"
+          />
+        </div>
+        <router-link
+          :to="{ name: 'collection-missing', params: { id: album._id } }"
+          class="btn__save"
+        >
+          Dodaj ili Izbriše
+        </router-link>
       </div>
-      <router-link
-        :to="{ name: 'collection-missing', params: { id: album._id } }"
-      >
-        Dodaj ili Izbriše
-      </router-link>
-
-      <h3>Imam</h3>
-      <div class="stickers-flex">
-        <StickerCard
-          v-for="n in album.duplicateStickers"
-          :key="n"
-          :number="n"
-        />
+      <div class="collection-details__owned">
+        <h3>Imam</h3>
+        <div class="stickers-flex">
+          <StickerCard
+            v-for="n in album.duplicateStickers"
+            :key="n"
+            :number="n"
+          />
+        </div>
+        <router-link
+          :to="{ name: 'collection-owned', params: { id: album._id } }"
+          class="btn__save"
+        >
+          Dodaj ili Izbriše
+        </router-link>
       </div>
-      <router-link
-        :to="{ name: 'collection-owned', params: { id: album._id } }"
-      >
-        Dodaj ili Izbriše
-      </router-link>
     </div>
   </section>
 </template>
@@ -87,6 +96,7 @@ export default {
   justify-content: flex-start;
   align-items: center;
   gap: 10px;
+  margin: 10px 0;
 }
 .checkbox-list {
   display: flex;
@@ -97,5 +107,10 @@ export default {
 .collection-link {
   display: flex;
   flex-direction: column;
+}
+
+.collection-details__missing,
+.collection-details__owned {
+  margin: 18px 0;
 }
 </style>
