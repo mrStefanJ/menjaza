@@ -17,14 +17,21 @@
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.0.1",
-    "nodemailer": "^7.0.11"
+    "nodemailer": "^7.0.11",
+    "socket.io": "^4.8.3"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
   },
   "nodemonConfig": {
-    "watch": ["index.js", "routes/", "models/"],
+    "watch": [
+      "index.js",
+      "routes/",
+      "models/"
+    ],
     "ext": "js,json",
-    "ignore": ["node_modules/"]
+    "ignore": [
+      "node_modules/"
+    ]
   }
 }
