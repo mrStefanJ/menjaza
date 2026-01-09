@@ -15,7 +15,11 @@ export default defineConfig({
       "/api": {
         target: 'http://localhost:5000', // tvoj backend
         changeOrigin: true,
-      }
+      },
+      "/socket.io": {
+        target: "http://localhost:5000",
+        ws: true,
+      },
     }
   },
   resolve: {
