@@ -9,6 +9,7 @@ const UserSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     city: { type: String, default: "" },
+    profileImage: { type: String, default: "/image/default-avatar.png" },
     country: {
       type: String,
       enum: [
