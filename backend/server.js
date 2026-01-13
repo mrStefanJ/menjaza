@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const http = require("http");
 const { Server } = require("socket.io");
+const path = require("path");
+
 require("dotenv").config();
 
 const authRoutes = require("./routes/auth.routes");
@@ -17,7 +19,7 @@ const server = http.createServer(app);
 /* ===== MIDDLEWARE ===== */
 app.use(cors());
 app.use(express.json());
-// app.use("/image", express.static(path.join(__dirname, "public/image")));
+app.use("/image", express.static(path.join(__dirname, "public/image")));
 
 /* ===== SOCKET.IO ===== */
 const io = new Server(server, {
