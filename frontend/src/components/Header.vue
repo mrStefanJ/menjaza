@@ -1,42 +1,48 @@
 <template>
   <header class="header">
-    <!-- NAV -->
     <nav class="nav-wrapper" :class="{ open: isOpen }">
       <ul class="nav-list">
         <li><router-link to="/home" @click="closeMenu">Home</router-link></li>
-        <li><router-link to="/albums" @click="closeMenu">Albums</router-link></li>
-        <li><router-link to="/message" @click="closeMenu">Message</router-link></li>
-        <li><router-link to="/exchange" @click="closeMenu">Exchange</router-link></li>
-        <li><router-link to="/collections" @click="closeMenu">Collections</router-link></li>
-        <!--<li><router-link to="/help" @click="closeMenu">Help</router-link></li>-->
-        <li><router-link to="/contact" @click="closeMenu">Contact</router-link></li>
+        <li>
+          <router-link to="/albums" @click="closeMenu">Albums</router-link>
+        </li>
+        <li>
+          <router-link to="/exchange" @click="closeMenu">Exchange</router-link>
+        </li>
+        <li>
+          <router-link to="/collections" @click="closeMenu"
+            >Collections</router-link
+          >
+        </li>
+        <li v-if="isAdmin">
+          <router-link to="/users" @click="closeMenu">Users</router-link>
+        </li>
+        <li>
+          <router-link to="/contact" @click="closeMenu">Contact</router-link>
+        </li>
       </ul>
     </nav>
 
-    <!-- TOP BAR -->
     <div class="header-top">
+      <!-- Hamburger -->
       <button class="hamburger" :class="{ open: isOpen }" @click="toggleMenu">
-        <span></span>
-        <span></span>
-        <span></span>
+        <span></span><span></span><span></span>
       </button>
 
-      <!-- PROFILE DROPDOWN -->
+      <!-- Profile -->
       <div class="profile-wrapper">
         <button class="profile-btn" @click="toggleProfileMenu">
-          Me
+          <ProfileImagePicker :image-url="profileImageUrl" :readonly="true" class="avatar avatar--profile" />
         </button>
 
         <ul v-if="isProfileOpen" class="profile-menu">
           <li>
-            <router-link to="/profile" @click="closeProfileMenu">
-              Profile
-            </router-link>
+            <router-link to="/profile" @click="closeProfileMenu"
+              >Profile</router-link
+            >
           </li>
           <li>
-            <button class="logout-link" @click="logout">
-              Logout
-            </button>
+            <button class="logout-link" @click="logout">Logout</button>
           </li>
         </ul>
       </div>
@@ -44,13 +50,16 @@
   </header>
 </template>
 
-
 <script>
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import { useAuthStore } from "@/store/auth";
 import { useRouter } from "vue-router";
+import ProfileImagePicker from "@/components/ProfileImagePicker.vue";
 
 export default {
+  components: {
+    ProfileImagePicker,
+  },
   setup() {
     const auth = useAuthStore();
     const router = useRouter();
@@ -58,9 +67,30 @@ export default {
     const isOpen = ref(false);
     const isProfileOpen = ref(false);
 
+    const user = computed(() => auth.user);
+
+    // Uvek default fallback, čak i pre nego što se user učita
+    const defaultAvatar = "/image/default-avatar.png";
+
+    const profileImageUrl = computed(() => {
+      if (!user.value?.profileImage) {  
+        return defaultAvatar;
+      }
+
+      return import.meta.env.VITE_API_URL + user.value.profileImage;
+    });
+
+    console.log("API URL:", import.meta.env.VITE_API_URL);
+
+    console.log("header image: ", profileImageUrl);
+
+    const isAdmin = computed(() => {
+      return auth.user?.role === "admin";
+    });
+
+    console.log(isAdmin);
     const toggleMenu = () => (isOpen.value = !isOpen.value);
     const closeMenu = () => (isOpen.value = false);
-
     const toggleProfileMenu = () =>
       (isProfileOpen.value = !isProfileOpen.value);
     const closeProfileMenu = () => (isProfileOpen.value = false);
@@ -83,41 +113,43 @@ export default {
       toggleProfileMenu,
       closeProfileMenu,
       logout,
+      profileImageUrl,
+      isAdmin,
     };
   },
 };
 </script>
 
 <style scoped>
-/* =========================
-   BASE (MOBILE FIRST)
-========================= */
-
 .header {
   position: relative;
   background-color: #333;
   color: white;
   padding: 10px 15px;
-}
-
-/* TOP BAR */
-.header-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-/* HAMBURGER */
+.header-top {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Hamburger (mobile) */
 .hamburger {
   width: 30px;
   height: 22px;
   border: none;
   background: none;
   cursor: pointer;
-  padding: 0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  padding: 0;
 }
 
 .hamburger span {
@@ -130,16 +162,18 @@ export default {
 .hamburger.open span:nth-child(1) {
   transform: translateY(9px) rotate(45deg);
 }
+
 .hamburger.open span:nth-child(2) {
   opacity: 0;
 }
+
 .hamburger.open span:nth-child(3) {
   transform: translateY(-9px) rotate(-45deg);
 }
 
-/* NAV (MOBILE COLLAPSED) */
+/* Nav */
 .nav-wrapper {
-   position: absolute;
+  position: absolute;
   top: 100%;
   left: 0;
   width: 100%;
@@ -172,28 +206,30 @@ export default {
   font-size: 18px;
 }
 
-/* PROFILE (MOBILE) */
+.nav-list a:hover {
+  color: #ff7e00;
+}
+
+/* Profile */
 .profile-wrapper {
   position: relative;
 }
 
 .profile-btn {
-  background-color: #555;
+  background: none;
   border: none;
-  color: white;
-  padding: 8px 14px;
-  border-radius: 4px;
   cursor: pointer;
+  padding: 0;
 }
 
-/* MOBILE DROPDOWN = FULL WIDTH */
+/* Dropdown */
 .profile-menu {
   position: absolute;
-  right: -14px;
+  right: 0;
   background-color: #444;
   margin-top: 10px;
   border-radius: 4px;
-  z-index: 1;
+  z-index: 100;
 }
 
 .profile-menu li {
@@ -210,26 +246,30 @@ export default {
   text-align: left;
   font-size: 16px;
   cursor: pointer;
+  padding: 0;
 }
 
 .profile-menu li:hover {
   background-color: #555;
 }
-/* =========================
-   DESKTOP
-========================= */
-@media (min-width: 768px) {
-.header {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+
+:deep(.avatar img) {
+  border-radius: 50%;
+  padding: 2px;
+  border: 2px solid #ff7e00;
 }
-  /* Hide hamburger */
+
+:deep(.avatar--profile img) {
+  width: 28px;
+  height: 28px;
+}
+
+/* Desktop adjustments */
+@media (min-width: 768px) {
   .hamburger {
     display: none;
   }
 
-  /* NAV ALWAYS VISIBLE */
   .nav-wrapper {
     position: static;
     max-height: none;
@@ -248,13 +288,9 @@ export default {
     margin: 0;
   }
 
-  /* PROFILE DROPDOWN (FLOATING) */
   .profile-menu {
-    right: -15px;
-    top: 28px;
+    top: 40px;
     min-width: 160px;
-    padding: 8px 0;
   }
 }
-
 </style>

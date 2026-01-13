@@ -3,6 +3,9 @@
     <h1>My profile</h1>
 
     <form @submit.prevent="updateProfile" class="profile-form">
+      <div class="form-group">
+        <ProfileImagePicker v-model="imageFile" :image-url="profileImageUrl" class="avatar avatar--profile" />
+      </div>
       <div
         class="form-group"
         :class="{
@@ -120,11 +123,14 @@
 </template>
 
 <script setup>
-import { reactive, ref, onMounted } from "vue";
+import { reactive, ref, onMounted, computed } from "vue";
 import { api } from "@/services/api";
+import { useAuthStore } from "@/store/auth";
+import ProfileImagePicker from "@/components/ProfileImagePicker.vue";
 
+const auth = useAuthStore();
+const imageFile = ref(null);
 const loading = ref(false);
-const submitted = ref(false);
 const message = ref("");
 
 const countries = [
@@ -167,42 +173,29 @@ const originalForm = reactive({});
 /* =========================
    FETCH USER
 ========================= */
-const fetchMe = async () => {
-  const { data } = await api.get("/users/me");
-
-  Object.assign(form, data);
-  Object.assign(originalForm, data);
-};
 
 const validateField = (field) => {
   switch (field) {
     case "firstName":
       errors.firstName = form.firstName.trim() ? "" : "First name is required";
       break;
-
     case "lastName":
       errors.lastName = form.lastName.trim() ? "" : "Last name is required";
       break;
-
     case "userName":
       errors.userName = form.userName.trim() ? "" : "Username is required";
       break;
-
     case "country":
       errors.country = form.country ? "" : "Country is required";
       break;
   }
 };
 
-/* =========================
-   VALIDACIJA
-========================= */
 const validateForm = () => {
   validateField("firstName");
   validateField("lastName");
   validateField("userName");
   validateField("country");
-
   return !Object.values(errors).some(Boolean);
 };
 
@@ -219,38 +212,42 @@ const hasChanges = () => {
   );
 };
 
+const profileImageUrl = computed(() => {
+  if (!form.profileImage) return "";
+  return import.meta.env.VITE_API_URL + form.profileImage;
+});
+
 /* =========================
    UPDATE PROFILE
 ========================= */
 const updateProfile = async () => {
-  submitted.value = true;
   message.value = "";
-
-  // obeleži sva polja kao touched
-  Object.keys(touched).forEach((key) => (touched[key] = true));
+  Object.keys(touched).forEach((k) => (touched[k] = true));
 
   if (!validateForm()) return;
 
-  if (!hasChanges()) {
-    message.value = "You don't have change in your data.";
-    return;
-  }
-
   loading.value = true;
-
   try {
-    const payload = {
-      firstName: form.firstName,
-      lastName: form.lastName,
-      userName: form.userName,
-      city: form.city,
-      country: form.country,
-    };
+    const formData = new FormData();
+    formData.append("firstName", form.firstName);
+    formData.append("lastName", form.lastName);
+    formData.append("userName", form.userName);
+    formData.append("city", form.city);
+    formData.append("country", form.country);
 
-    const { data } = await api.put("/users/me", payload);
+    if (imageFile.value) {
+      formData.append("profileImage", imageFile.value);
+    }
+
+    const { data } = await api.put("/users/me", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
 
     Object.assign(form, data);
     Object.assign(originalForm, data);
+
+    // 🔥 Update Pinia + localStorage -> automatski Header vidi novu sliku
+    auth.setUser(data);
 
     message.value = "Profile updated successfully";
   } catch (err) {
@@ -260,10 +257,15 @@ const updateProfile = async () => {
   }
 };
 
-onMounted(fetchMe);
+onMounted(() => {
+  if (auth.user) {
+    Object.assign(form, auth.user);
+    Object.assign(originalForm, auth.user);
+  }
+});
 </script>
 
-<style>
+<style scoped>
 .profile-page {
   padding: 16px;
   max-width: 100%;
@@ -318,6 +320,17 @@ onMounted(fetchMe);
   margin-top: 4px;
   font-size: 0.75rem;
   color: #dc3545;
+}
+
+:deep(.avatar img) {
+  border-radius: 50%;
+  padding: 2px;
+  border: 2px solid #ff7e00;
+}
+
+:deep(.avatar--profile img) {
+  width: 96px;
+  height: 96px;
 }
 
 button[type="submit"] {
