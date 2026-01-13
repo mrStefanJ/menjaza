@@ -11,13 +11,13 @@ import ExchangeAlbumsView from "@/pages/Exchange/ExchangeAlbums.vue";
 import ExchangeUserView from "@/pages/Exchange/ExchangeUser.vue";
 import AlbumView from "@/pages/Albums/Albums.vue";
 import AlbumDetailView from "@/pages/Albums/AlbumDetail.vue";
-import MessageView from "@/pages/Message.vue";
 import ProfileView from "@/pages/Profile/User.vue";
 import CollectionsView from "@/pages/Collections/Collections.vue";
 import CollectionDetailsView from "@/pages/Collections/CollectionDetails.vue";
 import CollectionMissing from "@/pages/Collections/CollectionMissing.vue";
 import CollectionOwned from "@/pages/Collections/CollectionOwned.vue";
 import ExchangeMessage from "@/pages/Message.vue";
+import UsersView from "@/pages/Users.vue";
 
 const routes = [
   { path: "/", component: LoginView },
@@ -25,8 +25,17 @@ const routes = [
   { path: "/home", component: HomeView, meta: { requiresAuth: true } },
   { path: "/contact", component: ContactView, meta: { requiresAuth: true } },
   { path: "/help", component: HelpView, meta: { requiresAuth: true } },
-  { path: "/exchange", name: "exchange", component: ExchangeAlbumsView, meta: { requiresAuth: true } },
-  { path: "/exchange/:albumId", component: ExchangeUserView, meta: { requiresAuth: true } },
+  {
+    path: "/exchange",
+    name: "exchange",
+    component: ExchangeAlbumsView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/exchange/:albumId",
+    component: ExchangeUserView,
+    meta: { requiresAuth: true },
+  },
   {
     path: "/albums",
     name: "albums",
@@ -40,7 +49,7 @@ const routes = [
     props: true,
     meta: { requiresAuth: true },
   },
-  // { path: "/message", component: MessageView, meta: { requiresAuth: true } },
+  { path: "/users", name: "users",component: UsersView, meta: { requiresAuth: true } },
   {
     path: "/profile",
     name: "profile",
@@ -72,11 +81,11 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
-  path: "/exchange/:albumId/chat/:userId",
-  name: "exchange-chat",
-  component: ExchangeMessage,
-  meta: { requiresAuth: true },
-}
+    path: "/exchange/:albumId/chat/:userId",
+    name: "exchange-chat",
+    component: ExchangeMessage,
+    meta: { requiresAuth: true },
+  },
 ];
 
 export const router = createRouter({

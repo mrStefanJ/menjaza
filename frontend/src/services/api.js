@@ -7,6 +7,11 @@ export const api = axios.create({
   },
 });
 
+const token = localStorage.getItem("token");
+if (token) {
+  api.defaults.headers.common.Authorization = `Bearer ${token}`;
+}
+
 // Optional: interceptor da svaki zahtev automatski šalje token
 api.interceptors.request.use(config => {
   const token = localStorage.getItem("token");

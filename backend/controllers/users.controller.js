@@ -29,7 +29,8 @@ exports.getAllUsers = async (req, res) => {
  * PUT /me
  */
 exports.updateMe = async (req, res) => {
-  const { firstName, lastName, userName, city, country } = req.body;
+  const { firstName, lastName, userName, city, country } =
+    req.body;
 
   const updates = {};
   if (firstName) updates.firstName = firstName;
@@ -37,6 +38,10 @@ exports.updateMe = async (req, res) => {
   if (userName) updates.userName = userName;
   if (city !== undefined) updates.city = city;
   if (country !== undefined) updates.country = country;
+
+    if (req.file) {
+    updates.profileImage = "/image/" + req.file.filename;
+  }
 
   const user = await User.findByIdAndUpdate(req.user._id, updates, {
     new: true,

@@ -36,7 +36,6 @@ exports.register = async (req, res) => {
     country: "",
     city: "",
     role,
-    profileImage
   });
 
   res.json({ message: "Registered successfully" });

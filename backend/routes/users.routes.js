@@ -1,42 +1,27 @@
 const router = require("express").Router();
 const auth = require("../middleware/auth");
 const controller = require("../controllers/users.controller");
+const multer = require("multer");
+const path = require("path");
 
-/**
- * GET /api/users/me
- * Vrati podatke trenutno ulogovanog korisnika
- */
+// ================== MULTER CONFIG ==================
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "../public/image"));
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage });
+
 router.get("/me", auth, controller.getMe);
-
-/**
- * GET /api/users/all
- * Vrati spisak svih user-a
- */
-
 router.get("/", auth, controller.getAllUsers);
-/**
- * PUT /api/users/me
- * Update osnovnih podataka profila
- */
-router.put("/me", auth, controller.updateMe);
-
-/**
- * PUT /api/users/me/albums
- * Dodavanje albuma korisniku
- */
+router.put("/me", auth, upload.single("profileImage"), controller.updateMe);
 router.put("/me/albums", auth, controller.addAlbum);
-
-/**
- * DELETE /api/users/me/albums/:albumId
- * Uklanjanje albuma korisniku
- */
 router.delete("/me/albums/:albumId", auth, controller.removeAlbum);
-
-// PUT /api/users/me/albums/:albumId/stickers
-router.put(
-  "/me/albums/:albumId/stickers",
-  auth,
-  controller.saveUserStickers
-);
+router.put("/me/albums/:albumId/stickers", auth, controller.saveUserStickers);
 
 module.exports = router;

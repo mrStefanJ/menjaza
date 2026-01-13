@@ -17,6 +17,7 @@ const server = http.createServer(app);
 /* ===== MIDDLEWARE ===== */
 app.use(cors());
 app.use(express.json());
+// app.use("/image", express.static(path.join(__dirname, "public/image")));
 
 /* ===== SOCKET.IO ===== */
 const io = new Server(server, {

@@ -3,31 +3,46 @@ import { api } from "../services/api";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
-    user: null,
-    token: localStorage.getItem("token") || null
+    user: JSON.parse(localStorage.getItem("user")),
+    token: localStorage.getItem("token"),
   }),
+
   getters: {
-    isLoggedIn: (state) => !!state.token // ili !!state.token ako hoćeš
+    isLoggedIn: (state) => !!state.token,
   },
+
   actions: {
     login(token) {
       this.token = token;
       localStorage.setItem("token", token);
+
+      api.defaults.headers.common.Authorization = `Bearer ${token}`;
     },
-    logout() {
-      this.token = null;
-      this.user = null;
-      localStorage.removeItem("token");
+
+    setUser(user) {
+      this.user = user;
+      localStorage.setItem("user", JSON.stringify(user));
     },
+
     async fetchUser() {
       if (!this.token) return;
+
       try {
-        const res = await api.get("/auth/me");
-        this.user = res.data;
+        const { data } = await api.get("/auth/me"); // 🔴 BITNO
+        this.setUser(data);
       } catch (err) {
-        console.error(err);
+        console.error("fetchUser failed", err);
         this.logout();
       }
-    }
-  }
+    },
+
+    logout() {
+      this.user = null;
+      this.token = null;
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+
+      delete api.defaults.headers.common.Authorization;
+    },
+  },
 });
