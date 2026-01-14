@@ -62,3 +62,31 @@ exports.login = async (req, res) => {
 exports.me = async (req, res) => {
   res.json(req.user);
 };
+
+exports.changePassword = async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  const userId = req.user.id;
+
+  if (!currentPassword || !newPassword) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
+  if (!passwordRegex.test(newPassword)) {
+    return res.status(400).json({ message: "Weak password" });
+  }
+
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  const ok = await bcrypt.compare(currentPassword, user.password);
+  if (!ok) {
+    return res.status(400).json({ message: "Current password is incorrect" });
+  }
+
+  user.password = await bcrypt.hash(newPassword, 10);
+  await user.save();
+
+  res.status(200).json({ message: "Password updated successfully" });
+};

@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 
 /**
  * GET /me
@@ -50,7 +51,6 @@ exports.updateMe = async (req, res) => {
 
   res.json(user);
 };
-
 /**
  * PUT /me/albums
  */

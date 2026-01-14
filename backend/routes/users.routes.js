@@ -4,7 +4,6 @@ const controller = require("../controllers/users.controller");
 const multer = require("multer");
 const path = require("path");
 
-// ================== MULTER CONFIG ==================
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, path.join(__dirname, "../public/image"));
