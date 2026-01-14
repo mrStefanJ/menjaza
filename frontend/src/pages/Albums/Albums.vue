@@ -101,3 +101,13 @@ export default {
   },
 };
 </script>
+
+<style>
+  .albums-page{
+    min-height: 100svh;
+  }
+  .albums-list{
+    min-height: 400px;
+    height: 100%;
+  }
+</style>

@@ -3,57 +3,63 @@
     <h1>My profile</h1>
 
     <form @submit.prevent="updateProfile" class="profile-form">
-      <div class="form-group">
-        <ProfileImagePicker v-model="imageFile" :image-url="profileImageUrl" class="avatar avatar--profile" />
-      </div>
-      <div
-        class="form-group"
-        :class="{
-          error: errors.firstName && touched.firstName,
-          success:
-            !errors.firstName &&
-            touched.firstName &&
-            form.firstName !== originalForm.firstName,
-        }"
-      >
-        <label>First name</label>
-
-        <input
-          v-model="form.firstName"
-          type="text"
-          @blur="
-            touched.firstName = true;
-            validateField('firstName');
-          "
+      <div class="form-group" :class="{ success: imageFile }">
+        <ProfileImagePicker
+          v-model="imageFile"
+          :image-url="profileImageUrl"
+          class="avatar avatar--profile"
         />
-
-        <small v-if="errors.firstName && touched.firstName">
-          {{ errors.firstName }}
-        </small>
       </div>
+      <div class="form-row">
+        <div
+          class="form-group"
+          :class="{
+            error: errors.firstName && touched.firstName,
+            success:
+              !errors.firstName &&
+              touched.firstName &&
+              form.firstName !== originalForm.firstName,
+          }"
+        >
+          <label>First name</label>
 
-      <div
-        class="form-group"
-        :class="{
-          error: errors.lastName && touched.lastName,
-          success:
-            !errors.lastName &&
-            touched.lastName &&
-            form.lastName !== originalForm.lastName,
-        }"
-      >
-        <label>Last name</label>
-        <input
-          v-model="form.lastName"
-          type="text"
-          @blur="
-            touched.lastName = true;
-            validateField('lastName');
-          "
-        />
-        <small v-if="errors.lastName && touched.lastName">
-          {{ errors.lastName }}
-        </small>
+          <input
+            v-model="form.firstName"
+            type="text"
+            @blur="
+              touched.firstName = true;
+              validateField('firstName');
+            "
+          />
+
+          <small v-if="errors.firstName && touched.firstName">
+            {{ errors.firstName }}
+          </small>
+        </div>
+
+        <div
+          class="form-group"
+          :class="{
+            error: errors.lastName && touched.lastName,
+            success:
+              !errors.lastName &&
+              touched.lastName &&
+              form.lastName !== originalForm.lastName,
+          }"
+        >
+          <label>Last name</label>
+          <input
+            v-model="form.lastName"
+            type="text"
+            @blur="
+              touched.lastName = true;
+              validateField('lastName');
+            "
+          />
+          <small v-if="errors.lastName && touched.lastName">
+            {{ errors.lastName }}
+          </small>
+        </div>
       </div>
 
       <div
@@ -85,39 +91,50 @@
         <input v-model="form.email" type="email" disabled />
       </div>
 
-      <div
-        class="form-group"
-        :class="{
-          error: errors.country && touched.country,
-          success:
-            !errors.country &&
-            touched.country &&
-            form.country !== originalForm.country,
-        }"
-      >
-        <label>Country</label>
-        <select v-model="form.country">
-          <option value="">-- Select country --</option>
-          <option v-for="c in countries" :key="c" :value="c">
-            {{ c }}
-          </option>
-        </select>
-        <small v-if="errors.country && touched.country">
-          {{ errors.country }}
-        </small>
-      </div>
+      <div class="form-row">
+        <div
+          class="form-group"
+          :class="{
+            error: errors.country && touched.country,
+            success:
+              !errors.country &&
+              touched.country &&
+              form.country !== originalForm.country,
+          }"
+        >
+          <label>Country</label>
+          <select v-model="form.country">
+            <option value="">-- Select country --</option>
+            <option v-for="c in countries" :key="c" :value="c">
+              {{ c }}
+            </option>
+          </select>
+          <small v-if="errors.country && touched.country">
+            {{ errors.country }}
+          </small>
+        </div>
 
-      <div class="form-group">
-        <label>City</label>
-        <input v-model="form.city" type="text" />
+        <div class="form-group">
+          <label>City</label>
+          <input v-model="form.city" type="text" />
+        </div>
       </div>
-
-      <p v-if="message" class="form-message">
-        {{ message }}
-      </p>
+      <div class="btn-action__flex">
       <button type="submit" :disabled="loading">
         {{ loading ? "Saving..." : "Save changes" }}
       </button>
+      <button
+        type="button"
+        class="btn-secondary"
+        @click="showPasswordModal = true"
+      >
+        Change password
+      </button>
+      </div>
+      <PasswordChangeModal
+        v-if="showPasswordModal"
+        @close="showPasswordModal = false"
+      />
     </form>
   </section>
 </template>
@@ -127,9 +144,11 @@ import { reactive, ref, onMounted, computed } from "vue";
 import { api } from "@/services/api";
 import { useAuthStore } from "@/store/auth";
 import ProfileImagePicker from "@/components/ProfileImagePicker.vue";
+import PasswordChangeModal from "@/components/Modal/PasswordChangeModal.vue";
 
 const auth = useAuthStore();
 const imageFile = ref(null);
+const showPasswordModal = ref(false);
 const loading = ref(false);
 const message = ref("");
 
@@ -208,7 +227,8 @@ const hasChanges = () => {
     form.lastName !== originalForm.lastName ||
     form.userName !== originalForm.userName ||
     form.city !== originalForm.city ||
-    form.country !== originalForm.country
+    form.country !== originalForm.country ||
+    !!imageFile.value
   );
 };
 
@@ -222,6 +242,12 @@ const profileImageUrl = computed(() => {
 ========================= */
 const updateProfile = async () => {
   message.value = "";
+
+  if (!hasChanges.value) {
+    message.value = "No changes to save";
+    return;
+  }
+
   Object.keys(touched).forEach((k) => (touched[k] = true));
 
   if (!validateForm()) return;
@@ -246,9 +272,9 @@ const updateProfile = async () => {
     Object.assign(form, data);
     Object.assign(originalForm, data);
 
-    // 🔥 Update Pinia + localStorage -> automatski Header vidi novu sliku
-    auth.setUser(data);
+    imageFile.value = null; // 👈 reset slike posle uspeha
 
+    auth.setUser(data);
     message.value = "Profile updated successfully";
   } catch (err) {
     message.value = err.response?.data?.message || "Failed to update profile";
@@ -267,40 +293,54 @@ onMounted(() => {
 
 <style scoped>
 .profile-page {
-  padding: 16px;
-  max-width: 100%;
+  width: 100%;
 }
 
 .profile-page h1 {
-  font-size: 1.4rem;
-  margin-bottom: 16px;
   text-align: center;
+  font-size: 1.4rem;
+  margin-bottom: 20px;
 }
 
 .profile-form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
 }
 
+/* Avatar block */
+/* .form-group:first-child {
+  align-items: flex-start;
+} */
+
+/* Base form group */
 .form-group {
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 .form-group label {
   font-size: 0.85rem;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   color: #555;
 }
 
 .form-group input,
 .form-group select {
+  padding: 12px;
+  border-radius: 8px;
   border: 1px solid #ccc;
-  padding: 10px;
-  border-radius: 6px;
+  font-size: 1rem;
 }
 
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+/* Validation states */
 .form-group.error input,
 .form-group.error select {
   border-color: #dc3545;
@@ -311,34 +351,38 @@ onMounted(() => {
   border-color: #28a745;
 }
 
-.form-group input:focus,
-.form-group select:focus {
-  border-color: #007bff;
-}
-
 .form-group small {
   margin-top: 4px;
   font-size: 0.75rem;
   color: #dc3545;
 }
 
+/* Avatar */
 :deep(.avatar img) {
-  border-radius: 50%;
-  padding: 2px;
-  border: 2px solid #ff7e00;
-}
-
-:deep(.avatar--profile img) {
   width: 96px;
   height: 96px;
+  border-radius: 50%;
+  border: 2px solid #ff7e00;
+  padding: 2px;
 }
 
+/* Country + City row */
+.form-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* Submit button */
 button[type="submit"] {
-  margin-top: 12px;
-  padding: 12px;
+  margin-top: 8px;
+  align-self: stretch;
+  padding: 14px;
   font-size: 1rem;
+  font-weight: 500;
+  border-radius: 10px;
   border: none;
-  border-radius: 8px;
   background-color: #007bff;
   color: #fff;
   cursor: pointer;
@@ -349,44 +393,51 @@ button[disabled] {
   cursor: not-allowed;
 }
 
+.btn-action__flex{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.btn-secondary{
+  margin-top: 8px;
+  margin-left: 3px;
+  align-self: stretch;
+  padding: 14px;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 10px;
+  border: none;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+}
+/* ---------- TABLET ---------- */
 @media (min-width: 768px) {
   .profile-page {
-    max-width: 600px;
+    max-width: 640px;
     margin: 0 auto;
     padding: 24px;
   }
 
-  .profile-page h1 {
-    font-size: 1.6rem;
-  }
-
-  .profile-form {
-    gap: 18px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .profile-page {
-    max-width: 720px;
-    padding: 32px;
-  }
-
-  .profile-form {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-  }
-
-  .form-group:nth-child(4), /* email */
-  .form-group:nth-child(7) {
-    /* city */
-    grid-column: span 2;
+  .form-row .form-group {
+    flex: 1;
   }
 
   button[type="submit"] {
-    grid-column: span 2;
-    justify-self: flex-end;
+    align-self: flex-start;
     width: 200px;
+  }
+}
+
+/* ---------- DESKTOP ---------- */
+@media (min-width: 1024px) {
+  .profile-page {
+    max-width: 720px;
+  }
+
+  .profile-form {
+    gap: 20px;
   }
 }
 </style>

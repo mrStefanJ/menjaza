@@ -90,6 +90,9 @@ export default {
 </script>
 
 <style>
+.collection-details {
+  min-height: 100svh;
+}
 .stickers-flex {
   display: flex;
   flex-wrap: wrap;

@@ -1,5 +1,6 @@
 <template>
-  <div class="contact-page">
+  <section class="contact-page">
+  <div class="contact">
     <h2>Contact Us</h2>
     <form @submit.prevent="sendEmail" class="contact-form">
       <input v-model="name" type="text" placeholder="Your Name" required />
@@ -11,6 +12,7 @@
       </button>
     </form>
   </div>
+  </section>
 </template>
 
 <script setup>
@@ -58,7 +60,12 @@ const sendEmail = async () => {
 
 <style scoped>
 .contact-page {
-  max-width: 500px;
+      min-height: 510px;
+    height: 100%;
+}
+
+.contact {
+max-width: 500px;
   margin: 2rem auto;
   padding: 1rem;
   border: 1px solid #ccc;

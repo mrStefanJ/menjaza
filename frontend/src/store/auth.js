@@ -28,7 +28,7 @@ export const useAuthStore = defineStore("auth", {
       if (!this.token) return;
 
       try {
-        const { data } = await api.get("/auth/me"); // 🔴 BITNO
+        const { data } = await api.get("/auth/me");
         this.setUser(data);
       } catch (err) {
         console.error("fetchUser failed", err);

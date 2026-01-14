@@ -1,5 +1,5 @@
 <template>
-  <section class="collections">
+  <section class="collection-page">
     <h1>Moja kolekcija</h1>
 
     <div v-if="loading">Učitavanje...</div>
@@ -91,7 +91,9 @@ export default {
 </script>
 
 <style>
-
+.collection-page {
+  min-height: 100svh;
+}
   .collection-list li {
         display: flex;
     flex-direction: row;

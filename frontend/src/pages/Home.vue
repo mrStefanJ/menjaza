@@ -96,11 +96,11 @@ export default {
 </script>
 
 <style>
- /* ===== BLOCK: home (mobile first) ===== */
-
 .home {
   padding: 1rem;
+  min-height: 100svh;
 }
+
 
 .home__title {
   font-size: 1.5rem;
@@ -113,14 +113,10 @@ export default {
   gap: 1.5rem;
 }
 
-/* Description */
-
 .home__description {
   font-size: 0.95rem;
   line-height: 1.6;
 }
-
-/* Users */
 
 .home__users {
   border-top: 1px solid #ddd;
@@ -163,8 +159,6 @@ export default {
   color: #999;
 }
 
-/* ===== TABLET & UP ===== */
-
 @media (min-width: 480px) {
   .home__content {
     flex-direction: row;
@@ -186,8 +180,6 @@ export default {
     border: 1px solid #999;
   }
 }
-
-/* ===== DESKTOP & UP ===== */
 
 @media (min-width: 768px) {
   .home {

@@ -1,17 +1,9 @@
 <template>
   <div class="profile-image-picker">
-    <img :src="preview" alt="Avatar"/>
-    <label
-      v-if="!readonly"
-      class="upload-btn"
-    >
-      Promeni sliku
-      <input
-        type="file"
-        accept="image/*"
-        @change="onChange"
-        hidden
-      />
+    <img :src="preview" alt="Avatar" />
+    <label v-if="!readonly" class="upload-btn">
+      Change image
+      <input type="file" accept="image/*" @change="onChange" hidden />
     </label>
   </div>
 </template>
@@ -62,7 +54,6 @@ const onChange = (e) => {
 };
 </script>
 
-
 <style scoped>
 .profile-image-picker {
   display: flex;
@@ -82,16 +73,14 @@ const onChange = (e) => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
   padding: 6px 12px;
   font-size: 14px;
   font-weight: 500;
-    width: 150px;
+  width: 150px;
   color: #fff;
   background-color: #007bff;
   border: 1px solid #ccc;
   border-radius: 6px;
-
   cursor: pointer;
   transition: background-color 0.2s ease, border-color 0.2s ease;
 }
@@ -104,6 +93,4 @@ const onChange = (e) => {
 .upload-btn:active {
   background-color: #ddd;
 }
-
-
 </style>
