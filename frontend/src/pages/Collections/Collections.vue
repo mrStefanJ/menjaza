@@ -1,14 +1,14 @@
 <template>
   <section class="collection-page">
-    <h1>Moja kolekcija</h1>
+    <h1>My collections</h1>
 
-    <div v-if="loading">Učitavanje...</div>
-    <div v-else-if="albums.length === 0">Nema albuma u kolekciji.</div>
+    <div v-if="loading">Loading...</div>
+    <div v-else-if="albums.length === 0">You don't have collections.</div>
 
     <ul v-else class="collection-list">
-      <li v-for="album in albums" :key="album._id">
-        <p>
-          <strong>{{ album.title }}</strong> – {{ album.artist }}
+      <li v-for="album in albums" :key="album._id" class="collection-card">
+        <p class="collection-name">
+          <strong>{{ album.title }}</strong> - {{ album.publisher }}
         </p>
         <router-link
           :to="{
@@ -18,7 +18,7 @@
           }"
           class="collection-link"
         >
-          Moje slicice
+          My thumbnails
         </router-link>
       </li>
     </ul>
@@ -94,14 +94,26 @@ export default {
 .collection-page {
   min-height: 100svh;
 }
-  .collection-list li {
-        display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-  }
 
-  .collection-list li a:hover {
-    color: #ff7e00;
+.collection-card {
+  background: #fff;
+  border-radius: 12px;
+  margin: 10px 0;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+}
+
+.collection-link:hover {
+  color: #ff7e00;
+}
+
+@media (min-width: 480px) {
+  .collection-card{
+    flex-direction: row;
+    justify-content: space-between;
   }
+}
 </style>

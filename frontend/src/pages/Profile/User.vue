@@ -308,12 +308,6 @@ onMounted(() => {
   gap: 16px;
 }
 
-/* Avatar block */
-/* .form-group:first-child {
-  align-items: flex-start;
-} */
-
-/* Base form group */
 .form-group {
   display: flex;
   flex-direction: column;
@@ -426,7 +420,7 @@ button[disabled] {
 
   button[type="submit"] {
     align-self: flex-start;
-    width: 200px;
+    width: 140px;
   }
 }
 

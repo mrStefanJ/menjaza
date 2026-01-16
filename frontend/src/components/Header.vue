@@ -132,6 +132,7 @@ export default {
 }
 
 .header-top {
+  width: 100%;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -238,6 +239,7 @@ export default {
 
 .profile-menu a,
 .logout-link {
+  display: block;
   color: white;
   text-decoration: none;
   background: none;
@@ -266,6 +268,10 @@ export default {
 
 /* Desktop adjustments */
 @media (min-width: 768px) {
+  .header-top {
+    width: 20%;
+    justify-content: flex-end;
+  }
   .hamburger {
     display: none;
   }

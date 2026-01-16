@@ -148,48 +148,6 @@ button {
 }
 
 
-/* Album Page */
-
-.album-item {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    margin: 15px 0px;
-}
-
-.album-item h3{
-  margin-left: 10px;
-}
-.album-item a {
-  margin-right: 10px;
-  text-decoration: none;
-  color: #000000;
-}
-
-.album-item a:hover{
-  color: #ff7e00;
-}
-
-.album-back:hover{
-color: #ff7e00;
-}
-
-/* .album-btn{
-  margin-top: 10px;
-  border-radius: 4px;
-  padding: 8px 14px;
-  background: #555;
-  color: #ffffff;
-  border: 0;
-}
-
-.album-btn:hover {
-  background: #555;
-  color: #ff7e00;
-  cursor: pointer;
-} */
-
 /* =========================================
    TABLET — from 480px and above
    ========================================= */

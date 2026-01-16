@@ -1,35 +1,48 @@
 <template>
-  <section class="exchange-page">
-    <header class="exchange-header">
-      <h1>Moguće razmene</h1>
-      <p>Albumi za koje postoji potencijal za razmenu sličica</p>
+  <section class="exchange">
+    <header class="exchange__header">
+      <h1 class="exchange__title">Moguće razmene</h1>
+      <p class="exchange__subtitle">
+        Albumi za koje postoji potencijal za razmenu sličica
+      </p>
     </header>
 
-    <div class="album-list">
+    <div class="exchange__list">
       <div
         v-for="album in albums"
         :key="album.albumId"
-        class="album-card"
+        class="exchange__card"
         @click="openAlbum(album.albumId)"
       >
-        <div>
-          <h3>{{ album.albumName }}</h3>
-          <p>{{ album.exchangeUsers }} korisnika za razmenu</p>
+        <div class="exchange__card-content">
+          <h3 class="exchange__card-title">
+            {{ album.albumName }}
+          </h3>
+          <p class="exchange__card-meta">
+            {{ album.exchangeUsers }} korisnika za razmenu
+          </p>
         </div>
 
-        <span class="arrow">→</span>
+        <span class="exchange__card-arrow">→</span>
       </div>
 
-      <div v-if="loading" class="empty">
+      <div
+        v-if="loading"
+        class="exchange__empty exchange__empty--loading"
+      >
         Učitavanje albuma...
       </div>
 
-      <div v-else-if="!albums.length" class="empty">
+      <div
+        v-else-if="!albums.length"
+        class="exchange__empty"
+      >
         Trenutno nema mogućih razmena
       </div>
     </div>
   </section>
 </template>
+
 
 <script setup>
 import { ref, onMounted } from "vue";
@@ -65,40 +78,90 @@ const openAlbum = (albumId) => {
 </script>
 
 <style scoped>
-.exchange-page {
+.exchange {
   max-width: 900px;
   margin: 0 auto;
   padding: 24px;
   min-height: 100svh;
 }
 
-.album-list {
+/* Header */
+.exchange__header {
+  margin-bottom: 24px;
+}
+
+.exchange__title {
+  margin-bottom: 4px;
+}
+
+.exchange__subtitle {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* List */
+.exchange__list {
   display: grid;
   gap: 12px;
 }
 
-.album-card {
+/* Card */
+.exchange__card {
   background: #fff;
   border-radius: 12px;
   padding: 16px 20px;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
   cursor: pointer;
-  box-shadow: 0 6px 20px rgba(0,0,0,.06);
+  transition: background 0.2s ease;
 }
 
-.album-card:hover {
+.exchange__card:hover {
   background: #f8fbff;
 }
 
-.arrow {
+.exchange__card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.exchange__card-title {
+  margin-bottom: 4px;
+}
+
+.exchange__card-meta {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.exchange__card-arrow {
   font-size: 22px;
 }
 
-.empty {
+/* Empty states */
+.exchange__empty {
   text-align: center;
   padding: 32px;
   color: #6b7280;
 }
+
+.exchange__empty--loading {
+  opacity: 0.7;
+}
+
+/* Responsive */
+@media (min-width: 480px) {
+  .exchange__card {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .exchange__card-content {
+    align-items: flex-start;
+  }
+}
+
 </style>

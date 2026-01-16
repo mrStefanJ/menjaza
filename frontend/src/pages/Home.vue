@@ -85,7 +85,6 @@ export default {
         const currentUserName = localStorage.getItem("userName");
 
         this.users = allUsers.filter(user => user.userName !== currentUserName);
-        console.log(this.users);
       } catch (err) {
         console.error(err);
         this.error = err.message;
