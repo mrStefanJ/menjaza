@@ -18,7 +18,7 @@ exports.getMe = async (req, res) => {
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.find().select(
-      "firstName lastName userName createdAt country albums"
+      "firstName lastName userName email createdAt country city albums"
     );
     res.json(users);
   } catch (err) {
