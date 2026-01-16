@@ -19,8 +19,8 @@ export default {
 
 <style scoped>
 .sticker-card {
-  width: 45px;
-  height: 45px;
+  width: 40px;
+  height: 40px;
   border: 2px solid #ccc;
   border-radius: 8px;
   cursor: pointer;

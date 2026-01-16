@@ -1,6 +1,8 @@
 <template>
   <nav v-if="totalPages > 1" class="pagination">
     <button
+      class="pagination__button"
+      :class="{ 'pagination__button--disabled': currentPage === 1 }"
       :disabled="currentPage === 1"
       @click="changePage(currentPage - 1)"
     >
@@ -10,13 +12,16 @@
     <button
       v-for="page in pages"
       :key="page"
-      :class="{ active: page === currentPage }"
+      class="pagination__button"
+      :class="{ 'pagination__button--active': page === currentPage }"
       @click="changePage(page)"
     >
       {{ page }}
     </button>
 
     <button
+      class="pagination__button"
+      :class="{ 'pagination__button--disabled': currentPage === totalPages }"
       :disabled="currentPage === totalPages"
       @click="changePage(currentPage + 1)"
     >
@@ -24,6 +29,7 @@
     </button>
   </nav>
 </template>
+
 
 <script>
 export default {
@@ -72,26 +78,26 @@ export default {
   margin-top: 20px;
 }
 
-button {
+.pagination__button {
   padding: 6px 12px;
-  cursor: pointer;
   background: #555;
   color: #fff;
   border: none;
   border-radius: 4px;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease;
 }
 
-button:hover {
-    color: #ff7e00;
+.pagination__button:hover:not(.pagination__button--disabled) {
+  color: #ff7e00;
 }
 
-button.active {
+.pagination__button--active {
   font-weight: bold;
   background: #9a9a9a;
-  color: #fff;
 }
 
-button:disabled {
+.pagination__button--disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }

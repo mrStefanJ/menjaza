@@ -1,16 +1,41 @@
 <template>
-  <section class="albums-page">
-    <h1>Albums list</h1>
+  <section class="albums">
+    <h1 class="albums__title">Albums list</h1>
 
-    <div v-if="loading">Loading albums...</div>
-    <div v-else-if="albums.length === 0">No albums found.</div>
+    <div class="albums__search">
+      <SearchInput
+        v-model="search"
+        placeholder="Search albums by title..."
+      />
+    </div>
 
-    <ul v-else class="albums-list">
-      <li v-for="album in paginatedAlbums" :key="album._id" class="album-item">
-        <h3>{{ album.title }}</h3>
+    <div
+      v-if="loading"
+      class="albums__status albums__status--loading"
+    >
+      Loading albums...
+    </div>
+
+    <div
+      v-else-if="filteredAlbums.length === 0"
+      class="albums__status albums__status--empty"
+    >
+      No albums found.
+    </div>
+
+    <ul v-else class="albums__list">
+      <li
+        v-for="album in paginatedAlbums"
+        :key="album._id"
+        class="albums__card"
+      >
+        <h3 class="albums__card-title">
+          {{ album.title }}
+        </h3>
+
         <router-link
           :to="{ name: 'album-details', params: { id: album._id }, query: $route.query }"
-          class="details-link"
+          class="albums__card-link"
         >
           Details
         </router-link>
@@ -19,63 +44,61 @@
 
     <Pagination
       :current-page="currentPage"
-      :total-items="albums.length"
+      :total-items="filteredAlbums.length"
       :page-size="pageSize"
       @update:page="onPageChange"
     />
   </section>
 </template>
 
+
 <script>
 import Pagination from "@/components/Pagination.vue";
+import SearchInput from "@/components/SearchInput.vue";
 
 export default {
   name: "Albums",
-  components: { Pagination },
+  components: { Pagination, SearchInput  },
 
   data() {
     return {
       albums: [],
+      search: "",
       loading: false,
-      error: null,
       currentPage: 1,
       pageSize: 10,
     };
   },
 
   computed: {
+    filteredAlbums() {
+      if (!this.search) return this.albums;
+
+      const q = this.search.toLowerCase();
+      return this.albums.filter((a) =>
+        a.title.toLowerCase().includes(q)
+      );
+    },
+
     paginatedAlbums() {
       const start = (this.currentPage - 1) * this.pageSize;
-      const end = start + this.pageSize;
-      return this.albums.slice(start, end);
+      return this.filteredAlbums.slice(start, start + this.pageSize);
+    },
+  },
+
+  watch: {
+ search() {
+      this.currentPage = 1;
     },
   },
 
   mounted() {
-    this.syncPageFromRoute();
     this.fetchAlbums();
   },
 
-  watch: {
-    "$route.query.page": {
-      imemediate: true,
-      handler() {
-        this.syncPageFromRoute();
-      }
-    }
-  },
-
   methods: {
-    syncPageFromRoute() {
-    const page = Number(this.$route.query.page);
-    this.currentPage = page && page > 0 ? page : 1;
-  },
     onPageChange(page) {
       this.currentPage = page;
-      this.$router.push({
-        name: "albums",
-        query: { page },
-      });
     },
 
     async fetchAlbums() {
@@ -103,11 +126,71 @@ export default {
 </script>
 
 <style>
-  .albums-page{
-    min-height: 100svh;
+  .albums {
+  min-height: 100svh;
+}
+
+/* Title */
+.albums__title {
+  margin-bottom: 16px;
+}
+
+/* Search */
+.albums__search {
+  margin-bottom: 20px;
+}
+
+/* Status (loading / empty) */
+.albums__status {
+  text-align: center;
+  padding: 20px;
+  font-size: 16px;
+}
+
+.albums__status--loading {
+  opacity: 0.7;
+}
+
+.albums__status--empty {
+  color: #777;
+}
+
+/* List */
+.albums__list {
+  min-height: 400px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Item */
+.albums__card {
+  background: #fff;
+  border-radius: 12px;
+  margin: 10px 0;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* Link */
+.albums__card-link {
+  text-decoration: none;
+  color: #000;
+  transition: color 0.2s ease;
+}
+
+.albums__card-link:hover {
+  color: #ff7e00;
+}
+
+
+@media (min-width: 480px) {
+  .albums__card{
+    flex-direction: row;
+    justify-content: space-between;
   }
-  .albums-list{
-    min-height: 400px;
-    height: 100%;
-  }
+}
 </style>

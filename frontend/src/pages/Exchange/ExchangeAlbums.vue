@@ -1,9 +1,9 @@
 <template>
   <section class="exchange">
     <header class="exchange__header">
-      <h1 class="exchange__title">Moguće razmene</h1>
+      <h1 class="exchange__title">Possible exchanges</h1>
       <p class="exchange__subtitle">
-        Albumi za koje postoji potencijal za razmenu sličica
+        Albums that have thumbnail exchange potential
       </p>
     </header>
 
@@ -19,30 +19,23 @@
             {{ album.albumName }}
           </h3>
           <p class="exchange__card-meta">
-            {{ album.exchangeUsers }} korisnika za razmenu
+            {{ album.exchangeUsers }} exchange user
           </p>
         </div>
 
         <span class="exchange__card-arrow">→</span>
       </div>
 
-      <div
-        v-if="loading"
-        class="exchange__empty exchange__empty--loading"
-      >
-        Učitavanje albuma...
+      <div v-if="loading" class="exchange__empty exchange__empty--loading">
+        Loading album...
       </div>
 
-      <div
-        v-else-if="!albums.length"
-        class="exchange__empty"
-      >
-        Trenutno nema mogućih razmena
+      <div v-else-if="!albums.length" class="exchange__empty">
+        There are currently no exchanges possible
       </div>
     </div>
   </section>
 </template>
-
 
 <script setup>
 import { ref, onMounted } from "vue";
@@ -63,7 +56,6 @@ onMounted(async () => {
     if (!res.ok) throw new Error("Failed");
 
     albums.value = await res.json();
-    console.log("Albums: ",albums.value);
   } catch (err) {
     console.error("Album exchange fetch error:", err);
     albums.value = [];
@@ -163,5 +155,4 @@ const openAlbum = (albumId) => {
     align-items: flex-start;
   }
 }
-
 </style>

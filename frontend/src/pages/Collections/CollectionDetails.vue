@@ -1,13 +1,18 @@
 <template>
   <section class="collection-details">
-    <h1>Sličice – {{ album?.title }}</h1>
+    <router-link
+      :to="{ name: 'collections', query: $route.query }"
+      class="btn__back"
+      >← Back</router-link
+    >
+    <h1>{{ album?.title }}</h1>   
 
-    <div v-if="loading">Učitavanje...</div>
+    <div v-if="loading">Loading...</div>
     <div v-else-if="error">{{ error }}</div>
 
     <div v-if="album">
       <div class="collection-details__missing">
-        <h3>Nedostaju</h3>
+        <h3>Missing</h3>
         <div class="stickers-flex">
           <StickerCard
             v-for="n in album.missingStickers"
@@ -19,11 +24,11 @@
           :to="{ name: 'collection-missing', params: { id: album._id } }"
           class="btn__save"
         >
-          Dodaj ili Izbriše
+          Add or Remove
         </router-link>
       </div>
       <div class="collection-details__owned">
-        <h3>Imam</h3>
+        <h3>Have</h3>
         <div class="stickers-flex">
           <StickerCard
             v-for="n in album.duplicateStickers"
@@ -35,7 +40,7 @@
           :to="{ name: 'collection-owned', params: { id: album._id } }"
           class="btn__save"
         >
-          Dodaj ili Izbriše
+          Add or Remove
         </router-link>
       </div>
     </div>

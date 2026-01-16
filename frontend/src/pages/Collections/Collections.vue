@@ -27,7 +27,7 @@
 
 <script>
 export default {
-  name: "MyCollection",
+  name: "collections",
 
   data() {
     return {

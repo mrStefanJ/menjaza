@@ -1,57 +1,119 @@
 <template>
-  <section class="contact-page">
-  <div class="contact">
-    <h2>Contact Us</h2>
-    <form @submit.prevent="sendEmail" class="contact-form">
-      <input v-model="name" type="text" placeholder="Your Name" required />
-      <input v-model="email" type="email" placeholder="Your Email" required />
-      <input v-model="subject" type="text" placeholder="Subject" required />
-      <textarea v-model="message" placeholder="Message" required></textarea>
-      <button type="submit" :disabled="loading">
-        {{ loading ? "Sending..." : "Send Message" }}
-      </button>
-    </form>
-  </div>
+  <section class="contact">
+    <div class="contact__container">
+      <h2 class="contact__title">Contact Us</h2>
+
+      <form class="contact__form" @submit.prevent="sendEmail">
+        <div class="contact__field">
+          <input
+            v-model="form.name"
+            type="text"
+            class="contact__input"
+            placeholder="Your Name"
+            required
+          />
+        </div>
+
+        <div class="contact__field">
+          <input
+            v-model="form.email"
+            type="email"
+            class="contact__input"
+            placeholder="Your Email"
+            required
+          />
+        </div>
+
+        <div class="contact__field">
+          <input
+            v-model="form.subject"
+            type="text"
+            class="contact__input"
+            placeholder="Subject"
+            required
+          />
+        </div>
+
+        <div class="contact__field">
+          <textarea
+            v-model="form.message"
+            class="contact__textarea"
+            placeholder="Message"
+            rows="5"
+            required
+          />
+        </div>
+
+        <button
+          class="contact__button"
+          :class="{ 'contact__button--loading': loading }"
+          type="submit"
+          :disabled="loading"
+        >
+          {{ loading ? "Sending..." : "Send Message" }}
+        </button>
+
+        <p v-if="status.message" :class="statusClass">
+          {{ status.message }}
+        </p>
+      </form>
+    </div>
   </section>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import axios from "axios";
 
-const name = ref("");
-const email = ref("");
-const subject = ref("");
-const message = ref("");
 const loading = ref(false);
 
-const sendEmail = async () => {
-  if (!name.value || !email.value || !subject.value || !message.value) {
-    alert("Please fill in all fields.");
-    return;
-  }
+const form = ref({
+  name: "",
+  email: "",
+  subject: "",
+  message: "",
+});
 
+const status = ref({
+  type: "", // success | error
+  message: "",
+});
+
+const statusClass = computed(() => ({
+  contact__status: true,
+  "contact__status--success": status.value.type === "success",
+  "contact__status--error": status.value.type === "error",
+}));
+
+const resetForm = () => {
+  form.value = {
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  };
+};
+
+const sendEmail = async () => {
+  status.value = { type: "", message: "" };
   loading.value = true;
 
   try {
-    await axios.post("http://localhost:5000/send-email", {
-      name: name.value,
-      email: email.value,
-      subject: subject.value,
-      message: message.value
-    });
+    await axios.post("http://localhost:5000/send-email", form.value);
 
-    alert("Email sent successfully!");
-    name.value = "";
-    email.value = "";
-    subject.value = "";
-    message.value = "";
-  } catch (err) {
-    console.error(err);
-    alert(
-      "Failed to send email: " +
-        (err.response?.data?.message || err.message)
-    );
+    status.value = {
+      type: "success",
+      message: "Your message has been sent successfully.",
+    };
+
+    resetForm();
+  } catch (error) {
+    status.value = {
+      type: "error",
+      message:
+        error.response?.data?.message ||
+        "An unexpected error occurred. Please try again.",
+    };
   } finally {
     loading.value = false;
   }
@@ -59,45 +121,98 @@ const sendEmail = async () => {
 </script>
 
 <style scoped>
-.contact-page {
-      min-height: 510px;
-    height: 100%;
-}
-
+/* ===== Block ===== */
 .contact {
-max-width: 500px;
-  margin: 2rem auto;
-  padding: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  min-height: 100svh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
 }
 
-.contact-form {
+/* ===== Elements ===== */
+.contact__container {
+  width: 100%;
+  max-width: 520px;
+      padding: 24px 24px 24px 0px;
+}
+
+.contact__title {
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-size: 1.75rem;
+}
+
+.contact__form {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  gap: 1rem;
 }
 
-.contact-form input,
-.contact-form textarea {
-  margin-bottom: 1rem;
-  padding: 0.5rem;
-  font-size: 1rem;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+.contact__field {
+  width: 100%;
 }
 
-.contact-form button {
+.contact__input,
+.contact__textarea {
+  width: 100%;
   padding: 0.75rem;
   font-size: 1rem;
-  background-color: #1976d2;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+  border: 1px solid #cfd8dc;
+  border-radius: 6px;
+  transition: border-color 0.2s ease;
 }
 
-.contact-form button:disabled {
-  background-color: #aaa;
+.contact__input:focus,
+.contact__textarea:focus {
+  outline: none;
+  border-color: #1976d2;
+}
+
+.contact__button {
+  padding: 0.85rem;
+  font-size: 1rem;
+  font-weight: 600;
+  background-color: #333;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.contact__button:hover:not(:disabled) {
+  background-color: #464646;
+  color: #ff7e00;
+}
+
+/* ===== Modifiers ===== */
+.contact__button--loading {
+  opacity: 0.7;
   cursor: not-allowed;
+}
+
+.contact__status {
+  margin-top: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.contact__status--success {
+  color: #2e7d32;
+}
+
+.contact__status--error {
+  color: #c62828;
+}
+
+/* ===== Tablet & Up ===== */
+@media (min-width: 768px) {
+  .contact {
+    padding: 3rem 1rem;
+  }
+
+  .contact__title {
+    font-size: 2rem;
+  }
 }
 </style>

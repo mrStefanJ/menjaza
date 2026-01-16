@@ -1,41 +1,55 @@
 <template>
-  <section class="album-details-page">
+  <section class="album">
     <router-link
       :to="{ name: 'albums', query: $route.query }"
-      class="album-back"
-      >← Back to albums</router-link
+      class="btn__back"
     >
+      ← Back
+    </router-link>
 
-    <div v-if="loading">Loading album...</div>
-    <div v-else-if="error">{{ error }}</div>
+    <p v-if="loading" class="album__state">Loading album...</p>
+    <p v-else-if="error" class="album__state album__state--error">
+      {{ error }}
+    </p>
 
-    <div v-else-if="album">
-      <h1>{{ album.title }}</h1>
+    <div v-else-if="album" class="album__content">
+      <h1 class="album__title">{{ album.title }}</h1>
 
-      <div class="album-details">
-        <div class="album-image">
-          <img :src="album.cover" alt="Cover image" class="album-image" />
+      <div class="album__details">
+        <div class="album__image">
+          <img :src="album.cover" :alt="album.title" />
         </div>
-        <div class="album-info">
-          <p>Publisher: {{ album.publisher }}</p>
-          <p>Category: {{ album.category }}</p>
-          <p>Release: {{ album.year }}</p>
-          <p>Stickers: {{ album.stickersCount }}</p>
-          <p v-if="album.franchise">Franchise: {{ album.franchise }}</p>
+
+        <div class="album__info">
+          <p><strong>Publisher:</strong> {{ album.publisher }}</p>
+          <p><strong>Category:</strong> {{ album.category }}</p>
+          <p><strong>Release:</strong> {{ album.year }}</p>
+          <p><strong>Stickers:</strong> {{ album.stickersCount }}</p>
+          <p v-if="album.franchise">
+            <strong>Franchise:</strong> {{ album.franchise }}
+          </p>
         </div>
       </div>
 
       <button
-        @click="addAlbum(album._id)"
-        :disabled="adding || isAdded"
+        class="album__action"
         :class="{
-          'album-btn': true,
-          'album-btn--disabled': isAdded || adding,
+          'album__action--disabled': isAdded || adding,
         }"
+        :disabled="isAdded || adding"
+        @click="addAlbum(album._id)"
       >
         <span v-if="isAdded">Already added</span>
         <span v-else>{{ adding ? "Adding..." : "Add Album" }}</span>
       </button>
+
+      <p
+        v-if="status.message"
+        class="album__status"
+        :class="`album__status--${status.type}`"
+      >
+        {{ status.message }}
+      </p>
     </div>
   </section>
 </template>
@@ -45,13 +59,18 @@ import { api } from "@/services/api";
 
 export default {
   name: "AlbumDetails",
+
   data() {
     return {
       album: null,
       loading: false,
-      error: null,
       adding: false,
       isAdded: false,
+      error: null,
+      status: {
+        type: "", // success | error
+        message: "",
+      },
     };
   },
 
@@ -65,11 +84,11 @@ export default {
       this.error = null;
 
       try {
-        const id = this.$route.params.id; // parametar iz URL
+        const albumId = this.$route.params.id;
 
         const [albumRes, userRes] = await Promise.all([
-          api.get(`/albums/${id}`),
-          api.get("users/me"),
+          api.get(`/albums/${albumId}`),
+          api.get("/users/me"),
         ]);
 
         this.album = albumRes.data;
@@ -78,8 +97,8 @@ export default {
           (a) => a.albumId === this.album._id
         );
       } catch (err) {
-        console.error(err);
-        this.error = err.response?.data?.message || "Failed to fetch album";
+        this.error =
+          err.response?.data?.message || "Failed to load album details.";
       } finally {
         this.loading = false;
       }
@@ -87,12 +106,22 @@ export default {
 
     async addAlbum(albumId) {
       this.adding = true;
+      this.status = { type: "", message: "" };
+
       try {
         await api.put("/users/me/albums", { albumId });
+
         this.isAdded = true;
-        alert("Album added successfully!");
+        this.status = {
+          type: "success",
+          message: "Album added to your collection.",
+        };
       } catch (err) {
-        alert(err.response?.data?.message || "Failed to add album");
+        this.status = {
+          type: "error",
+          message:
+            err.response?.data?.message || "Failed to add album.",
+        };
       } finally {
         this.adding = false;
       }
@@ -101,36 +130,83 @@ export default {
 };
 </script>
 
-<style>
-.album-details-page {
-  padding: 20px;
+<style scoped>
+.album {
+  padding: 1.25rem;
+      min-height: 100svh;
+    height: 100%;
 }
 
-.album-details {
+.album__title {
+  margin-bottom: 1rem;
+  font-size: 1.6rem;
+}
+
+.album__state {
+  font-size: 1rem;
+}
+
+.album__state--error {
+  color: #c62828;
+}
+
+.album__content {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 1.5rem;
 }
 
-.album-image img {
+.album__details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.album__image img {
   width: 200px;
   height: 200px;
   object-fit: cover;
+  border-radius: 6px;
 }
 
-.album-btn {
-  padding: 10px 16px;
+.album__info p {
+  margin: 0.25rem 0;
+}
+
+.album__action {
+  align-self: flex-start;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  background-color: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
 }
 
-.album-btn--disabled,
-.album-btn:disabled {
+.album__action--disabled {
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
+.album__status {
+  font-size: 0.95rem;
+}
+
+.album__status--success {
+  color: #2e7d32;
+}
+
+.album__status--error {
+  color: #c62828;
+}
+
+/* ===== Tablet & Up ===== */
 @media (min-width: 480px) {
-  .album-details {
+  .album__details {
     flex-direction: row;
+    align-items: flex-start;
   }
 }
 </style>

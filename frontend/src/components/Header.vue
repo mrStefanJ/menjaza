@@ -69,7 +69,7 @@ export default {
 
     const user = computed(() => auth.user);
 
-    // Uvek default fallback, čak i pre nego što se user učita
+    // default fallback profile image
     const defaultAvatar = "/image/default-avatar.png";
 
     const profileImageUrl = computed(() => {
@@ -80,15 +80,10 @@ export default {
       return import.meta.env.VITE_API_URL + user.value.profileImage;
     });
 
-    console.log("API URL:", import.meta.env.VITE_API_URL);
-
-    console.log("header image: ", profileImageUrl);
-
     const isAdmin = computed(() => {
       return auth.user?.role === "admin";
     });
 
-    console.log(isAdmin);
     const toggleMenu = () => (isOpen.value = !isOpen.value);
     const closeMenu = () => (isOpen.value = false);
     const toggleProfileMenu = () =>
@@ -210,6 +205,26 @@ export default {
 .nav-list a:hover {
   color: #ff7e00;
 }
+
+/* Active link – exact match */
+.nav-list a.router-link-exact-active {
+  color: #ff7e00;
+  font-weight: 600;
+  position: relative;
+}
+
+/* Optional underline indicator */
+.nav-list a.router-link-exact-active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 100%;
+  height: 2px;
+  background-color: #ff7e00;
+  border-radius: 2px;
+}
+
 
 /* Profile */
 .profile-wrapper {

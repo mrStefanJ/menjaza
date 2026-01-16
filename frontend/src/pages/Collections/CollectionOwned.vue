@@ -1,7 +1,11 @@
 <template>
   <section class="stickers__owned">
-    <h1>Sličice koje mi fale</h1>
-
+    <router-link
+      :to="{ name: 'collection-details', query: $route.query }"
+      class="btn__back"
+      >← Back</router-link
+    >
+    <h1>The thumbnails I have</h1>
     <div class="stickers-grid">
       <StickerCard
         v-for="num in allStickers"
@@ -12,7 +16,12 @@
       />
     </div>
 
-    <button @click="save" class="btn__save">Sačuvaj</button>
+    <div v-if="album" class="actions">
+      <button @click="selectAll" class="btn__secondary">Select all</button>
+
+      <button @click="clearAll" class="btn__secondary">Clear all</button>
+      <button v-if="album" @click="save" class="btn__save">Save</button>
+    </div>
     <ScrollToTop />
   </section>
 </template>
@@ -47,20 +56,18 @@ export default {
     async load() {
       const token = localStorage.getItem("token");
       const albumId = this.$route.params.id;
-      console.log(this.$route);
 
       const res = await fetch(`/api/albums/${albumId}`, {
         headers: { Authorization: `Bearer ${token}` },
         cache: "no-store",
       });
-
       this.album = await res.json();
 
       const user = JSON.parse(localStorage.getItem("user"));
       const userAlbum = user.albums.find((a) => a.albumId === albumId);
 
       this.userAlbum = userAlbum;
-      this.selected = userAlbum?.duplicateStickers || [];
+      this.selected = userAlbum?.missingStickers || [];
     },
 
     toggleSticker(num) {
@@ -71,9 +78,18 @@ export default {
       }
     },
 
+    selectAll() {
+      this.selected = [...this.allStickers];
+    },
+
+    clearAll() {
+      this.selected = [];
+    },
+
     async save() {
       const token = localStorage.getItem("token");
-const albumId = this.userAlbum.albumId;
+      const albumId = this.userAlbum.albumId;
+
       await fetch(`/api/users/me/albums/${albumId}/stickers`, {
         method: "PUT",
         headers: {
@@ -103,11 +119,3 @@ const albumId = this.userAlbum.albumId;
   },
 };
 </script>
-
-<style scoped>
-.stickers-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, 80px);
-  gap: 12px;
-}
-</style>

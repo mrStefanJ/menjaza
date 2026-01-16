@@ -1,8 +1,12 @@
 <template>
   <section class="stickers__missing">
-    <h1>Sličice koje mi fale</h1>
-
-    <div v-if="!album">Učitavanje...</div>
+    <router-link
+      :to="{ name: 'collection-details', query: $route.query }"
+      class="btn__back"
+      >← Back</router-link
+    >
+    <h1>The thumbnails I'm missing</h1>
+    <div v-if="!album">Loading...</div>
 
     <div v-else class="stickers-grid">
       <StickerCard
@@ -13,8 +17,12 @@
         @toggle="toggleSticker(num)"
       />
     </div>
+    <div v-if="album" class="actions">
+      <button @click="selectAll" class="btn__secondary">Select all</button>
 
-    <button v-if="album" @click="save" class="btn__save">Sačuvaj</button>
+      <button @click="clearAll" class="btn__secondary">Clear all</button>
+      <button v-if="album" @click="save" class="btn__save">Save</button>
+    </div>
     <ScrollToTop />
   </section>
 </template>
@@ -51,14 +59,12 @@ export default {
       const token = localStorage.getItem("token");
       const albumId = this.$route.params.id;
 
-      // 1️⃣ fetch albuma
       const res = await fetch(`/api/albums/${albumId}`, {
         headers: { Authorization: `Bearer ${token}` },
         cache: "no-store",
       });
       this.album = await res.json();
 
-      // 2️⃣ fetch user iz localStorage
       const user = JSON.parse(localStorage.getItem("user"));
       const userAlbum = user.albums.find((a) => a.albumId === albumId);
 
@@ -74,10 +80,16 @@ export default {
       }
     },
 
+    selectAll() {
+      this.selected = [...this.allStickers];
+    },
+
+    clearAll() {
+      this.selected = [];
+    },
+
     async save() {
       const token = localStorage.getItem("token");
-
-      // 👇 OVO JE PRAVI ID
       const albumId = this.userAlbum.albumId;
 
       await fetch(`/api/users/me/albums/${albumId}/stickers`, {
@@ -91,7 +103,6 @@ export default {
         }),
       });
 
-      // 🔄 refetch usera (bez keša)
       const userRes = await fetch("/api/users/me", {
         headers: { Authorization: `Bearer ${token}` },
         cache: "no-store",
@@ -100,7 +111,6 @@ export default {
       const freshUser = await userRes.json();
       localStorage.setItem("user", JSON.stringify(freshUser));
 
-      // ⬅️ vrati se na detalje ALBUMA (ne user-albuma)
       this.$router.push({
         name: "collection-details",
         params: { id: this.album._id },
@@ -109,11 +119,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.stickers-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, 80px);
-  gap: 12px;
-}
-</style>

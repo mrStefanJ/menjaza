@@ -4,19 +4,19 @@
 
     <div class="home__content">
       <div class="home__description">
-        menjaza.rs je prva domaća stranica namenjena razmeni sličica za albume.
-        Nastala je kao pokušaj da se sakupljanje sličica pojednostavi, kako bi uz
-        druženje lakše i brže popunili albume sa sličicama. Korišćenje stranice je
-        potpuno besplatno. Samo je potrebno da kreirate svoj nalog, popunite podatke
-        o sličicama koje nudite i onima koje tražite. Sistem vam automatski nudi
-        moguće razmene i omogućuje da stupite u kontakt sa korisnikom koji ima
-        sličice koje vam nedostaju i sa njim dogovorite detalje oko razmene.
-        Pozovite svoje komšije, prijatelje, rođake. Što nas je više, lakše i brže
-        ćemo se menjati.
+        menjaza.rs is the first home page dedicated to sharing thumbnails for albums.
+        It was created as an attempt to simplify the collection of thumbnails, in order to
+        socializing easier and faster filled albums with thumbnails. Using the site is
+        completely free. You just need to create your account, fill in the data
+        about the thumbnails you offer and the ones you request. The system automatically offers you
+        possible exchanges and allows you to get in touch with the user who has
+        thumbnails you are missing and agree with him on the details of the exchange.
+        Invite your neighbors, friends, relatives. The more of us, the easier and faster
+        we will change.
       </div>
 
       <div class="home__users">
-        <h3 class="home__users-title">Novi članovi</h3>
+        <h3 class="home__users-title">New members</h3>
 
         <ul v-if="users.length" class="home__users-list">
           <li
@@ -34,7 +34,7 @@
           </li>
         </ul>
 
-        <p v-else class="home__users-empty">Nema korisnika</p>
+        <p v-else class="home__users-empty">There are no users</p>
       </div>
     </div>
   </section>
