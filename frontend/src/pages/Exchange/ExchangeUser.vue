@@ -2,7 +2,7 @@
   <section class="exchange-page">
     <router-link
       :to="{ name: 'exchange', query: $route.query }"
-      class="exchange-back"
+      class="btn__back"
       >← Back to exchange</router-link
     >
     <div class="exchange-header">

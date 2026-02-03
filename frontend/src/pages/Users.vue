@@ -22,7 +22,6 @@ const users = ref([]);
 const error = ref("");
 const search = ref("");
 
-// funkcija za fetch
 const fetchAllUsers = async () => {
   try {
     const response = await fetch("/api/users", {
@@ -39,7 +38,6 @@ const fetchAllUsers = async () => {
 
     const currentUserName = localStorage.getItem("userName");
 
-    // bez 'this', direktno postavljamo ref
     users.value = allUsers.filter((user) => user.userName !== currentUserName);
     console.log(users.value);
   } catch (err) {
@@ -60,7 +58,6 @@ const filteredUsers = computed(() => {
   );
 });
 
-// poziv kada se komponenta mountuje
 onMounted(() => {
   fetchAllUsers();
 });

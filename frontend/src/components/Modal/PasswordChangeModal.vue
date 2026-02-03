@@ -1,21 +1,23 @@
 <template>
-  <div class="modal-backdrop" @click.self="close">
-    <div class="modal">
-      <h2>Change password</h2>
+  <div class="change-password-modal" @click.self="close">
+    <div class="change-password-modal__content">
+      <h2 class="change-password-modal__title">Change password</h2>
 
-      <form @submit.prevent="submit">
+      <form class="change-password-modal__form" @submit.prevent="submit">
         <!-- CURRENT PASSWORD -->
-        <div class="form-group">
-          <label>Current password</label>
-          <div class="password-field">
+        <div class="change-password-modal__group">
+          <label class="change-password-modal__label">Current password</label>
+
+          <div class="change-password-modal__password">
             <input
               :type="show.current ? 'text' : 'password'"
               v-model="form.currentPassword"
               autocomplete="current-password"
+              class="change-password-modal__input"
             />
             <button
               type="button"
-              class="toggle"
+              class="change-password-modal__toggle"
               @click="show.current = !show.current"
             >
               {{ show.current ? "Hide" : "Show" }}
@@ -24,45 +26,58 @@
         </div>
 
         <!-- NEW PASSWORD -->
-        <div class="form-group">
-          <label>New password</label>
-          <div class="password-field">
+        <div class="change-password-modal__group">
+          <label class="change-password-modal__label">New password</label>
+
+          <div class="change-password-modal__password">
             <input
               :type="show.new ? 'text' : 'password'"
               v-model="form.newPassword"
               autocomplete="new-password"
+              class="change-password-modal__input"
             />
             <button
               type="button"
-              class="toggle"
+              class="change-password-modal__toggle"
               @click="show.new = !show.new"
             >
               {{ show.new ? "Hide" : "Show" }}
             </button>
           </div>
 
-          <!-- STRENGTH INDICATOR -->
-          <div class="strength">
-            <div class="bar">
-              <span :class="strengthClass"></span>
+          <!-- STRENGTH -->
+          <div class="change-password-modal__strength">
+            <div class="change-password-modal__strength-bar">
+              <span
+                class="change-password-modal__strength-fill"
+                :class="`change-password-modal__strength-fill--${strengthClass}`"
+              />
             </div>
-            <small :class="strengthClass">
+
+            <small
+              class="change-password-modal__strength-text"
+              :class="`change-password-modal__strength-text--${strengthClass}`"
+            >
               {{ strengthLabel }}
             </small>
           </div>
         </div>
 
         <!-- CONFIRM -->
-        <div class="form-group">
-          <label>Confirm new password</label>
-          <div class="password-field">
+        <div class="change-password-modal__group">
+          <label class="change-password-modal__label">
+            Confirm new password
+          </label>
+
+          <div class="change-password-modal__password">
             <input
               :type="show.confirm ? 'text' : 'password'"
               v-model="form.confirmPassword"
+              class="change-password-modal__input"
             />
             <button
               type="button"
-              class="toggle"
+              class="change-password-modal__toggle"
               @click="show.confirm = !show.confirm"
             >
               {{ show.confirm ? "Hide" : "Show" }}
@@ -70,14 +85,34 @@
           </div>
         </div>
 
-        <p v-if="error" class="error-message">{{ error }}</p>
-        <p v-if="success" class="success-message">{{ success }}</p>
+        <p
+          v-if="error"
+          class="change-password-modal__message change-password-modal__message--error"
+        >
+          {{ error }}
+        </p>
 
-        <div class="modal-actions">
-          <button type="button" class="btn-secondary" @click="close">
+        <p
+          v-if="success"
+          class="change-password-modal__message change-password-modal__message--success"
+        >
+          {{ success }}
+        </p>
+
+        <div class="change-password-modal__actions">
+          <button
+            type="button"
+            class="change-password-modal__button change-password-modal__button--secondary"
+            @click="close"
+          >
             Cancel
           </button>
-          <button type="submit" :disabled="loading">
+
+          <button
+            type="submit"
+            class="change-password-modal__button"
+            :disabled="loading"
+          >
             {{ loading ? "Saving..." : "Update password" }}
           </button>
         </div>
@@ -182,7 +217,7 @@ const submit = async () => {
 </script>
 
 <style scoped>
-.modal-backdrop {
+.change-password-modal {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.55);
@@ -192,7 +227,7 @@ const submit = async () => {
   z-index: 1000;
 }
 
-.modal {
+.change-password-modal__content {
   background: #fff;
   width: 100%;
   max-width: 420px;
@@ -200,28 +235,33 @@ const submit = async () => {
   border-radius: 14px;
 }
 
-h2 {
+.change-password-modal__title {
   text-align: center;
   margin-bottom: 16px;
 }
 
-.form-group {
+.change-password-modal__group {
   margin-bottom: 14px;
 }
 
-.password-field {
+.change-password-modal__label {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.change-password-modal__password {
   display: flex;
   gap: 8px;
 }
 
-.password-field input {
+.change-password-modal__input {
   flex: 1;
   padding: 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
 }
 
-.toggle {
+.change-password-modal__toggle {
   background: none;
   border: none;
   font-size: 0.8rem;
@@ -230,75 +270,89 @@ h2 {
 }
 
 /* STRENGTH */
-.strength {
+.change-password-modal__strength {
   margin-top: 6px;
 }
 
-.bar {
+.change-password-modal__strength-bar {
   height: 6px;
   background: #eee;
   border-radius: 6px;
   overflow: hidden;
 }
 
-.bar span {
+.change-password-modal__strength-fill {
   display: block;
   height: 100%;
-  width: 0%;
+  width: 0;
   transition: width 0.3s;
 }
 
-.bar span.weak {
+.change-password-modal__strength-fill--weak {
   width: 33%;
   background: #dc3545;
 }
 
-.bar span.medium {
+.change-password-modal__strength-fill--medium {
   width: 66%;
   background: #ffc107;
 }
 
-.bar span.strong {
+.change-password-modal__strength-fill--strong {
   width: 100%;
   background: #28a745;
 }
 
-.strength small {
+.change-password-modal__strength-text {
   font-size: 0.75rem;
 }
 
-.strength small.weak {
+.change-password-modal__strength-text--weak {
   color: #dc3545;
 }
 
-.strength small.medium {
+.change-password-modal__strength-text--medium {
   color: #ffc107;
 }
 
-.strength small.strong {
+.change-password-modal__strength-text--strong {
   color: #28a745;
 }
 
-.modal-actions {
+/* ACTIONS */
+.change-password-modal__actions {
   display: flex;
   justify-content: space-between;
   margin-top: 18px;
 }
 
-.error-message {
-  color: #dc3545;
-  font-size: 0.85rem;
-}
-
-.success-message {
-  color: #28a745;
-  font-size: 0.85rem;
-}
-
-.btn-secondary {
-  background: #e0e0e0;
-  border: none;
+.change-password-modal__button {
   padding: 10px 14px;
   border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: #333;
+  color: #fff;
+  border: 1px solid #ccc;
 }
+
+.change-password-modal__button:hover {
+  background: #515050;
+  border-color: #ff7e00;
+  color: #ff7e00;
+}
+
+/* MESSAGES */
+.change-password-modal__message {
+  font-size: 0.85rem;
+}
+
+.change-password-modal__message--error {
+  color: #dc3545;
+}
+
+.change-password-modal__message--success {
+  color: #28a745;
+}
+
 </style>

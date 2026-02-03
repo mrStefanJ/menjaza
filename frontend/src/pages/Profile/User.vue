@@ -78,7 +78,7 @@
           type="text"
           @blur="
             touched.lastName = true;
-            validateField('lastName');
+            validateField('userName');
           "
         />
         <small v-if="errors.userName && touched.userName">
@@ -119,17 +119,20 @@
           <input v-model="form.city" type="text" />
         </div>
       </div>
+      <p v-if="message" class="form-message">
+        {{ message }}
+      </p>
       <div class="btn-action__flex">
-      <button type="submit" :disabled="loading">
-        {{ loading ? "Saving..." : "Save changes" }}
-      </button>
-      <button
-        type="button"
-        class="btn-secondary"
-        @click="showPasswordModal = true"
-      >
-        Change password
-      </button>
+        <button class="btn-secondary" type="submit" :disabled="loading || !hasChanges">
+          {{ loading ? "Saving..." : "Save changes" }}
+        </button>
+        <button
+          type="button"
+          class="btn-secondary"
+          @click="showPasswordModal = true"
+        >
+          Change password
+        </button>
       </div>
       <PasswordChangeModal
         v-if="showPasswordModal"
@@ -243,7 +246,7 @@ const profileImageUrl = computed(() => {
 const updateProfile = async () => {
   message.value = "";
 
-  if (!hasChanges.value) {
+  if (!hasChanges()) {
     message.value = "No changes to save";
     return;
   }
@@ -272,7 +275,7 @@ const updateProfile = async () => {
     Object.assign(form, data);
     Object.assign(originalForm, data);
 
-    imageFile.value = null; // 👈 reset slike posle uspeha
+    imageFile.value = null;
 
     auth.setUser(data);
     message.value = "Profile updated successfully";
@@ -368,32 +371,13 @@ onMounted(() => {
   gap: 16px;
 }
 
-/* Submit button */
-button[type="submit"] {
-  margin-top: 8px;
-  align-self: stretch;
-  padding: 14px;
-  font-size: 1rem;
-  font-weight: 500;
-  border-radius: 10px;
-  border: none;
-  background-color: #007bff;
-  color: #fff;
-  cursor: pointer;
-}
-
-button[disabled] {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.btn-action__flex{
+.btn-action__flex {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
 }
 
-.btn-secondary{
+.btn-secondary {
   margin-top: 8px;
   margin-left: 3px;
   align-self: stretch;
@@ -401,11 +385,24 @@ button[disabled] {
   font-size: 1rem;
   font-weight: 500;
   border-radius: 10px;
-  border: none;
-  background-color: #007bff;
+  background: #333;
   color: #fff;
+  border: 1px solid #ccc;
   cursor: pointer;
 }
+
+.btn-secondary:hover {
+  background: #515050;
+  border-color: #ff7e00;
+  color: #ff7e00;
+}
+
+.form-message {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #ff0000;
+}
+
 /* ---------- TABLET ---------- */
 @media (min-width: 768px) {
   .profile-page {

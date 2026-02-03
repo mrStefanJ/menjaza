@@ -78,7 +78,7 @@ const onChange = (e) => {
   font-weight: 500;
   width: 150px;
   color: #fff;
-  background-color: #007bff;
+  background-color: #333;
   border: 1px solid #ccc;
   border-radius: 6px;
   cursor: pointer;
@@ -86,8 +86,9 @@ const onChange = (e) => {
 }
 
 .upload-btn:hover {
-  background-color: #278dfb;
-  border-color: #999;
+  background-color: #515050;
+  border-color: #ff7e00;
+  color: #ff7e00;
 }
 
 .upload-btn:active {
