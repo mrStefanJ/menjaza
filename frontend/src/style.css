@@ -12,6 +12,7 @@ main {
   position: relative;
   background: #e5f8fe;
   height: 100%;
+  min-height: 890px;
   padding: 10px;
 }
 
@@ -42,7 +43,7 @@ button {
   font-family: system-ui;
 }
 
-.btn__save {
+/* .btn__save {
   padding: 6px 12px;
   cursor: pointer;
   font-size: 1rem;
@@ -55,7 +56,7 @@ button {
 .btn__save:hover {
   background-color: #464646;
   color: #ff7e00;
-}
+} */
 
 .btn__back {
   font-size: 1rem;
@@ -69,71 +70,96 @@ button {
 /* =========================================
    MOBILE FIRST — BASE STYLES
    ========================================= */
+/* LOGIN PAGE */
 .auth {
-  width: 80%;
-  max-width: 380px;
-  margin: 40px auto;
-  padding: 22px;
-  border-radius: 12px;
-  background: #ffffff;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  min-height: 100vh;
   display: flex;
-  flex-direction: column;
-  gap: 15px;
+  align-items: center;
+  justify-content: center;
+  background: #e5f8fe;
+  padding: 16px;
 }
 
-.auth h2 {
+.auth__card {
+  width: 100%;
+  max-width: 380px;
+  background: #fff;
+  padding: 22px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.08);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.auth__title {
   text-align: center;
-  margin-bottom: 5px;
   font-size: 22px;
   font-weight: 600;
 }
 
-.auth input {
+.auth__form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.auth__field {
+  position: relative;
+}
+
+.auth__field--password .auth__input {
+  padding-right: 11px;
+}
+
+.auth__input {
+  width: 93%;
   padding: 12px;
   border-radius: 8px;
   border: 1px solid #ccc;
   font-size: 16px;
-  transition: border-color 0.2s ease;
-  width: 94%;
 }
 
-.auth input:focus {
-  border-color: #4a8af4;
-  outline: none;
-}
-
-.auth button {
-  padding: 12px;
-  background: #4a8af4;
+.auth__toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
   border: none;
-  color: #fff;
-  font-size: 17px;
-  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.2s ease;
 }
 
-.auth button:disabled {
+.auth__button {
+  margin-top: 8px;
+  padding: 12px;
+  font-size: 16px;
+  background: #4a8af4;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+}
+
+.auth__button:disabled {
   background: #9ebdf6;
   cursor: not-allowed;
+  opacity: 0.7;
 }
 
-.auth button:hover:not(:disabled) {
-  background: #3f7ae0;
-}
 
-.msg {
-  min-height: 20px;
+.auth__footer {
   text-align: center;
   font-size: 14px;
-  color: #d9534f;
 }
 
+.auth__footer a:hover {
+  color: #ff7e00;
+}
 /* INPUT WRAPPER za show/hide password */
 .input-wrapper {
   position: relative;
   width: 86%;
+  margin-top: 10px;
 }
 
 .input-wrapper input {
@@ -195,17 +221,11 @@ button {
    TABLET — from 480px and above
    ========================================= */
 @media (min-width: 480px) {
-  .auth {
-    margin: 60px auto;
+  .auth__card {
     padding: 26px;
   }
-
-  .auth h2 {
+  .auth__title {
     font-size: 24px;
-  }
-
-  .auth button {
-    font-size: 18px;
   }
 }
 
@@ -213,22 +233,19 @@ button {
    DESKTOP — from 768px and above
    ========================================= */
 @media (min-width: 768px) {
-  .auth {
+  main{
+    min-height: 890px;
+  }
+  .auth__card {
     max-width: 420px;
     padding: 30px;
-    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
   }
 
-  .auth h2 {
+  .auth__title {
     font-size: 26px;
   }
 
-  .input-wrapper {
-    width: 87%;
-  }
-
-  .auth input,
-  .input-wrapper input {
+  .auth__input {
     font-size: 17px;
   }
 }
@@ -237,8 +254,5 @@ button {
    LARGE DESKTOP — from 1024px and above
    ========================================= */
 @media (min-width: 1024px) {
-  .auth {
-    margin-top: 80px;
-    max-width: 450px;
-  }
+
 }
