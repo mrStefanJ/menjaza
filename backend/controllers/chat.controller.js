@@ -12,16 +12,29 @@ exports.getOrCreateChat = async (req, res) => {
   let chat = await Chat.findOne({
     participants,
     album: albumId,
-  });
+  }).populate("participants", "name");
 
   if (!chat) {
     chat = await Chat.create({
       participants,
       album: albumId,
     });
+
+    chat = await chat.populate("participants", "name");
   }
 
-  res.json(chat);
+  // pronađi "drugog" korisnika
+  const otherUser = chat.participants.find(
+    (u) => u._id.toString() !== me
+  );
+
+  res.json({
+    _id: chat._id,
+    otherUser: {
+      id: otherUser._id,
+      name: otherUser.name,
+    },
+  });
 };
 
 // get a message

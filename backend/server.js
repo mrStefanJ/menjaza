@@ -12,6 +12,7 @@ const userRoutes = require("./routes/users.routes");
 const albumsRoutes = require("./routes/albums.routes");
 const exchangeRoutes = require("./routes/exchange.routes");
 const chatRoutes = require("./routes/chat.routes");
+const adminRoutes = require("./routes/admin.routes");
 
 const app = express();
 const server = http.createServer(app);
@@ -38,6 +39,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/albums", albumsRoutes);
 app.use("/api/exchange", exchangeRoutes);
 app.use("/api/chat", chatRoutes);
+app.use("/api/admin", adminRoutes);
 
 /* ===== DB + START ===== */
 mongoose
