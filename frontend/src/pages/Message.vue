@@ -1,6 +1,5 @@
 <template>
   <section class="chat-page">
-    <!-- HEADER -->
     <header class="chat-header">
       <button class="back" @click="$router.back()">←</button>
 
@@ -8,12 +7,11 @@
         <div class="avatar">{{ otherUserInitial }}</div>
         <div>
           <strong>{{ otherUserName }}</strong>
-          <span class="status">Online</span>
+          <!-- <span class="status">Online</span> -->
         </div>
       </div>
     </header>
 
-    <!-- MESSAGES -->
     <div ref="messagesEl" class="messages">
       <div
         v-for="msg in messages"
@@ -31,7 +29,6 @@
       </div>
     </div>
 
-    <!-- INPUT -->
     <form class="chat-input" @submit.prevent="send">
       <input
         v-model="text"
@@ -65,8 +62,8 @@ const text = ref("");
 const messagesEl = ref(null);
 
 /* UI (kasnije možeš iz API-ja) */
-const otherUserName = "Korisnik";
-const otherUserInitial = "K";
+const otherUserName = route.query.userName || "Korisnik";
+const otherUserInitial = otherUserName.charAt(0).toUpperCase();
 
 /* SOCKET */
 const socket = io("/", {
@@ -161,138 +158,6 @@ const formatDate = (date) => {
 };
 </script>
 
-<style scoped>
-/* PAGE */
-.chat-page {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  background: #f8fafc;
-}
-
-/* HEADER */
-.chat-header {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  background: #fff;
-  border-bottom: 1px solid #eee;
-}
-
-.back {
-  font-size: 1.2rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.chat-user {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: #4f46e5;
-  color: #fff;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.status {
-  display: block;
-  font-size: 0.75rem;
-  color: #22c55e;
-}
-
-/* MESSAGES */
-.messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.message {
-  display: flex;
-  flex-direction: column;
-  max-width: 75%;
-}
-
-.message.mine {
-  align-self: flex-end;
-}
-
-.bubble {
-  padding: 0.6rem 0.8rem;
-  border-radius: 14px;
-  background: #e5e7eb;
-  font-size: 0.9rem;
-}
-
-.message.mine .bubble {
-  background: #4f46e5;
-  color: #fff;
-  border-bottom-right-radius: 4px;
-}
-
-.time {
-  font-size: 0.65rem;
-  color: #6b7280;
-  margin-top: 2px;
-  align-self: flex-end;
-}
-
-.message.mine .time {
-  color: #6b7280;
-}
-
-/* INPUT */
-.chat-input {
-  display: flex;
-  padding: 0.5rem;
-  background: #fff;
-  border-top: 1px solid #eee;
-}
-
-.chat-input input {
-  flex: 1;
-  padding: 0.6rem 0.75rem;
-  border-radius: 20px;
-  border: 1px solid #ddd;
-  outline: none;
-}
-
-.chat-input button {
-  margin-left: 0.5rem;
-  width: 42px;
-  border-radius: 50%;
-  border: none;
-  background: #4f46e5;
-  color: #fff;
-  font-size: 1.1rem;
-  cursor: pointer;
-}
-
-.chat-input button:disabled {
-  opacity: 0.5;
-}
-
-/* DESKTOP */
-@media (min-width: 768px) {
-  .chat-page {
-    max-width: 700px;
-    margin: 0 auto;
-    border-left: 1px solid #eee;
-    border-right: 1px solid #eee;
-  }
-}
+<style>
+@import "@/assets/message.css";
 </style>

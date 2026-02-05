@@ -1,6 +1,6 @@
 <template>
   <section class="home">
-    <h1 class="home__title">Dobrodošli !!!</h1>
+    <h1 class="home__title">WELCOME !!!</h1>
 
     <div class="home__content">
       <div class="home__description">

@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import { ref, watch, computed } from "vue";
+import { ref, watch, computed, onMounted, onBeforeUnmount } from "vue";
 import { useAuthStore } from "@/store/auth";
 import { useRouter } from "vue-router";
 import ProfileImagePicker from "@/components/ProfileImagePicker.vue";
@@ -98,6 +98,21 @@ export default {
 
     watch(isOpen, (open) => {
       document.body.style.overflow = open ? "hidden" : "";
+    });
+
+    const onClickOutside = (event) => {
+      const profileBtn = document.querySelector(".profile-wrapper");
+      if (profileBtn && !profileBtn.contains(event.target)) {
+        isProfileOpen.value = false;
+      }
+    };
+
+    onMounted(() => {
+      document.addEventListener("click", onClickOutside);
+    });
+
+    onBeforeUnmount(() => {
+      document.removeEventListener("click", onClickOutside);
     });
 
     return {

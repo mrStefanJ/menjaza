@@ -63,7 +63,7 @@
 
 <script setup>
 import { ref, computed } from "vue";
-import axios from "axios";
+import { api } from "@/services/api";
 
 const loading = ref(false);
 
@@ -99,7 +99,7 @@ const sendEmail = async () => {
   loading.value = true;
 
   try {
-    await axios.post("http://localhost:5000/send-email", form.value);
+    await api.post("/users/me/send-email", form.value);
 
     status.value = {
       type: "success",
@@ -120,99 +120,6 @@ const sendEmail = async () => {
 };
 </script>
 
-<style scoped>
-/* ===== Block ===== */
-.contact {
-  min-height: 100svh;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-}
-
-/* ===== Elements ===== */
-.contact__container {
-  width: 100%;
-  max-width: 520px;
-      padding: 24px 24px 24px 0px;
-}
-
-.contact__title {
-  margin-bottom: 1.5rem;
-  text-align: center;
-  font-size: 1.75rem;
-}
-
-.contact__form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-}
-
-.contact__field {
-  width: 100%;
-}
-
-.contact__input,
-.contact__textarea {
-  width: 100%;
-  padding: 0.75rem;
-  font-size: 1rem;
-  border: 1px solid #cfd8dc;
-  border-radius: 6px;
-  transition: border-color 0.2s ease;
-}
-
-.contact__input:focus,
-.contact__textarea:focus {
-  outline: none;
-  border-color: #1976d2;
-}
-
-.contact__button {
-  padding: 0.85rem;
-  font-size: 1rem;
-  font-weight: 600;
-  background-color: #333;
-  color: #ffffff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.contact__button:hover:not(:disabled) {
-  background-color: #464646;
-  color: #ff7e00;
-}
-
-/* ===== Modifiers ===== */
-.contact__button--loading {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.contact__status {
-  margin-top: 0.75rem;
-  font-size: 0.95rem;
-}
-
-.contact__status--success {
-  color: #2e7d32;
-}
-
-.contact__status--error {
-  color: #c62828;
-}
-
-/* ===== Tablet & Up ===== */
-@media (min-width: 768px) {
-  .contact {
-    padding: 3rem 1rem;
-  }
-
-  .contact__title {
-    font-size: 2rem;
-  }
-}
+<style>
+@import '@/assets/contact.css';
 </style>
