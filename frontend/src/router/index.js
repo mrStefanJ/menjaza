@@ -85,6 +85,7 @@ const routes = [
     name: "exchange-chat",
     component: ExchangeMessage,
     meta: { requiresAuth: true },
+    props: true,
   },
 ];
 

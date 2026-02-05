@@ -72,8 +72,7 @@ const openAlbum = (albumId) => {
 <style scoped>
 .exchange {
   max-width: 900px;
-  margin: 0 auto;
-  padding: 24px;
+  padding: 2rem;
   min-height: 100svh;
 }
 

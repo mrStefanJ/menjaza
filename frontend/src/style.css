@@ -52,6 +52,30 @@ button {
 .btn__back:hover {
   color: #ff7e00;
 }
+
+.btn {
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.btn--primary {
+  background: #333;
+  color: #fff;
+  border: 1px solid #ccc;
+}
+
+.btn--primary:hover {
+  background: #515050;
+  border-color: #ff7e00;
+  color: #ff7e00;
+}
+
+.btn--secondary {
+  background: #eee;
+  border: 1px solid #ccc;
+}
 /* =========================================
    MOBILE FIRST — BASE STYLES
    ========================================= */

@@ -67,5 +67,6 @@ onMounted(() => {
 .users-list {
   height: 100%;
   min-height: 100svh;
+  padding: 2rem;
 }
 </style>

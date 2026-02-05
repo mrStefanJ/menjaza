@@ -128,6 +128,7 @@ export default {
 <style>
   .albums {
   min-height: 100svh;
+  padding: 2rem;
 }
 
 /* Title */

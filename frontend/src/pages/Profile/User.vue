@@ -1,139 +1,147 @@
 <template>
-  <section class="profile-page">
-    <h1>My profile</h1>
+  <section class="profile">
+    <h1 class="profile__title">My profile</h1>
 
-    <form @submit.prevent="updateProfile" class="profile-form">
-      <div class="form-group" :class="{ success: imageFile }">
+    <form @submit.prevent="updateProfile" class="profile__form">
+      <!-- Avatar -->
+      <div class="profile__group profile__group--avatar" :class="{ 'profile__group--success': imageFile }">
         <ProfileImagePicker
           v-model="imageFile"
           :image-url="profileImageUrl"
-          class="avatar avatar--profile"
+          class="profile__avatar"
         />
       </div>
-      <div class="form-row">
+
+      <!-- First / Last name -->
+      <div class="profile__row">
         <div
-          class="form-group"
+          class="profile__group"
           :class="{
-            error: errors.firstName && touched.firstName,
-            success:
+            'profile__group--error': errors.firstName && touched.firstName,
+            'profile__group--success':
               !errors.firstName &&
               touched.firstName &&
               form.firstName !== originalForm.firstName,
           }"
         >
-          <label>First name</label>
-
+          <label class="profile__label">First name</label>
           <input
             v-model="form.firstName"
+            class="profile__input"
             type="text"
-            @blur="
-              touched.firstName = true;
-              validateField('firstName');
-            "
+            @blur="touched.firstName = true; validateField('firstName')"
           />
-
-          <small v-if="errors.firstName && touched.firstName">
+          <small v-if="errors.firstName && touched.firstName" class="profile__error">
             {{ errors.firstName }}
           </small>
         </div>
 
         <div
-          class="form-group"
+          class="profile__group"
           :class="{
-            error: errors.lastName && touched.lastName,
-            success:
+            'profile__group--error': errors.lastName && touched.lastName,
+            'profile__group--success':
               !errors.lastName &&
               touched.lastName &&
               form.lastName !== originalForm.lastName,
           }"
         >
-          <label>Last name</label>
+          <label class="profile__label">Last name</label>
           <input
             v-model="form.lastName"
+            class="profile__input"
             type="text"
-            @blur="
-              touched.lastName = true;
-              validateField('lastName');
-            "
+            @blur="touched.lastName = true; validateField('lastName')"
           />
-          <small v-if="errors.lastName && touched.lastName">
+          <small v-if="errors.lastName && touched.lastName" class="profile__error">
             {{ errors.lastName }}
           </small>
         </div>
       </div>
 
+      <!-- Username -->
       <div
-        class="form-group"
+        class="profile__group"
         :class="{
-          error: errors.userName && touched.userName,
-          success:
+          'profile__group--error': errors.userName && touched.userName,
+          'profile__group--success':
             !errors.userName &&
             touched.userName &&
             form.userName !== originalForm.userName,
         }"
       >
-        <label>Username</label>
+        <label class="profile__label">Username</label>
         <input
           v-model="form.userName"
+          class="profile__input"
           type="text"
-          @blur="
-            touched.lastName = true;
-            validateField('userName');
-          "
+          @blur="touched.userName = true; validateField('userName')"
         />
-        <small v-if="errors.userName && touched.userName">
+        <small v-if="errors.userName && touched.userName" class="profile__error">
           {{ errors.userName }}
         </small>
       </div>
 
-      <div class="form-group">
-        <label>Email</label>
-        <input v-model="form.email" type="email" disabled />
+      <!-- Email -->
+      <div class="profile__group">
+        <label class="profile__label">Email</label>
+        <input v-model="form.email" class="profile__input" type="email" disabled />
       </div>
 
-      <div class="form-row">
+      <!-- Country / City -->
+      <div class="profile__row">
         <div
-          class="form-group"
+          class="profile__group"
           :class="{
-            error: errors.country && touched.country,
-            success:
+            'profile__group--error': errors.country && touched.country,
+            'profile__group--success':
               !errors.country &&
               touched.country &&
               form.country !== originalForm.country,
           }"
         >
-          <label>Country</label>
-          <select v-model="form.country">
+          <label class="profile__label">Country</label>
+          <select v-model="form.country" class="profile__select">
             <option value="">-- Select country --</option>
             <option v-for="c in countries" :key="c" :value="c">
               {{ c }}
             </option>
           </select>
-          <small v-if="errors.country && touched.country">
+          <small v-if="errors.country && touched.country" class="profile__error">
             {{ errors.country }}
           </small>
         </div>
 
-        <div class="form-group">
-          <label>City</label>
-          <input v-model="form.city" type="text" />
+        <div class="profile__group">
+          <label class="profile__label">City</label>
+          <input v-model="form.city" class="profile__input" type="text" />
         </div>
       </div>
-      <p v-if="message" class="form-message">
+
+      <!-- Message -->
+      <p v-if="message" class="profile__message">
         {{ message }}
       </p>
-      <div class="btn-action__flex">
-        <button class="btn-secondary" type="submit" :disabled="loading || !hasChanges">
+
+      <!-- Actions -->
+      <div class="profile__actions">
+        <button
+          class="btn btn--primary"
+          type="submit"
+          :disabled="loading || !hasChanges"
+        >
           {{ loading ? "Saving..." : "Save changes" }}
         </button>
+
         <button
           type="button"
-          class="btn-secondary"
+          class="btn btn--primary"
           @click="showPasswordModal = true"
         >
           Change password
         </button>
       </div>
+
       <PasswordChangeModal
         v-if="showPasswordModal"
         @close="showPasswordModal = false"
@@ -141,6 +149,7 @@
     </form>
   </section>
 </template>
+
 
 <script setup>
 import { reactive, ref, onMounted, computed } from "vue";
@@ -295,67 +304,68 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.profile-page {
+.profile {
   width: 100%;
 }
 
-.profile-page h1 {
+.profile__title {
   text-align: center;
   font-size: 1.4rem;
   margin-bottom: 20px;
 }
 
-.profile-form {
+.profile__form {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.form-group {
+/* Groups */
+.profile__group {
   display: flex;
   flex-direction: column;
   width: 100%;
 }
 
-.form-group label {
+.profile__group--error .profile__input,
+.profile__group--error .profile__select {
+  border-color: #dc3545;
+}
+
+.profile__group--success .profile__input,
+.profile__group--success .profile__select {
+  border-color: #28a745;
+}
+
+/* Labels & inputs */
+.profile__label {
   font-size: 0.85rem;
   margin-bottom: 6px;
   color: #555;
 }
 
-.form-group input,
-.form-group select {
+.profile__input,
+.profile__select {
   padding: 12px;
   border-radius: 8px;
   border: 1px solid #ccc;
   font-size: 1rem;
 }
 
-.form-group input:focus,
-.form-group select:focus {
+.profile__input:focus,
+.profile__select:focus {
   outline: none;
   border-color: #007bff;
 }
 
-/* Validation states */
-.form-group.error input,
-.form-group.error select {
-  border-color: #dc3545;
-}
-
-.form-group.success input,
-.form-group.success select {
-  border-color: #28a745;
-}
-
-.form-group small {
+.profile__error {
   margin-top: 4px;
   font-size: 0.75rem;
   color: #dc3545;
 }
 
 /* Avatar */
-:deep(.avatar img) {
+.profile__avatar img {
   width: 96px;
   height: 96px;
   border-radius: 50%;
@@ -363,72 +373,49 @@ onMounted(() => {
   padding: 2px;
 }
 
-/* Country + City row */
-.form-row {
+/* Layout */
+.profile__row {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
   gap: 16px;
-}
-
-.btn-action__flex {
-  display: flex;
-  flex-direction: row;
   flex-wrap: wrap;
 }
 
-.btn-secondary {
-  margin-top: 8px;
-  margin-left: 3px;
-  align-self: stretch;
-  padding: 14px;
-  font-size: 1rem;
-  font-weight: 500;
-  border-radius: 10px;
-  background: #333;
-  color: #fff;
-  border: 1px solid #ccc;
-  cursor: pointer;
+/* Actions */
+.profile__actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
-.btn-secondary:hover {
-  background: #515050;
-  border-color: #ff7e00;
-  color: #ff7e00;
-}
-
-.form-message {
+/* Message */
+.profile__message {
   text-align: center;
   font-size: 0.9rem;
   color: #ff0000;
 }
 
-/* ---------- TABLET ---------- */
+/* Tablet */
 @media (min-width: 768px) {
-  .profile-page {
+  .profile {
     max-width: 640px;
     margin: 0 auto;
     padding: 24px;
   }
 
-  .form-row .form-group {
+  .profile__row .profile__group {
     flex: 1;
-  }
-
-  button[type="submit"] {
-    align-self: flex-start;
-    width: 140px;
   }
 }
 
-/* ---------- DESKTOP ---------- */
+/* Desktop */
 @media (min-width: 1024px) {
-  .profile-page {
+  .profile {
     max-width: 720px;
   }
 
-  .profile-form {
+  .profile__form {
     gap: 20px;
   }
 }
+
 </style>

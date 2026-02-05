@@ -22,7 +22,7 @@
         </div>
         <router-link
           :to="{ name: 'collection-missing', params: { id: album._id } }"
-          class="btn__save"
+          class="btn btn--primary"
         >
           Add or Remove
         </router-link>
@@ -38,7 +38,7 @@
         </div>
         <router-link
           :to="{ name: 'collection-owned', params: { id: album._id } }"
-          class="btn__save"
+          class="btn btn--primary"
         >
           Add or Remove
         </router-link>
@@ -66,6 +66,7 @@ export default {
   async mounted() {
     await this.loadData();
     console.log("Missing stickers", this.album.missingStickers);
+    console.log("Owned stickers", this.album.duplicateStickers);
   },
 
   methods: {
@@ -95,30 +96,5 @@ export default {
 </script>
 
 <style>
-.collection-details {
-  min-height: 100svh;
-}
-.stickers-flex {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 10px;
-  margin: 10px 0;
-}
-.checkbox-list {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
-.collection-link {
-  display: flex;
-  flex-direction: column;
-}
-
-.collection-details__missing,
-.collection-details__owned {
-  margin: 18px 0;
-}
+@import "@/assets/collection.css";
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <section class="collection-page">
+  <section class="collection">
     <h1>My collections</h1>
 
     <div v-if="loading">Loading...</div>
@@ -91,29 +91,5 @@ export default {
 </script>
 
 <style>
-.collection-page {
-  min-height: 100svh;
-}
-
-.collection-card {
-  background: #fff;
-  border-radius: 12px;
-  margin: 10px 0;
-  padding: 16px 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
-}
-
-.collection-link:hover {
-  color: #ff7e00;
-}
-
-@media (min-width: 480px) {
-  .collection-card{
-    flex-direction: row;
-    justify-content: space-between;
-  }
-}
+@import "@/assets/collection.css";
 </style>

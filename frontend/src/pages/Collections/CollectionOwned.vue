@@ -17,10 +17,10 @@
     </div>
 
     <div v-if="album" class="actions">
-      <button @click="selectAll" class="btn__secondary">Select all</button>
+      <button @click="selectAll" class="btn btn--primary">Select all</button>
 
-      <button @click="clearAll" class="btn__secondary">Clear all</button>
-      <button v-if="album" @click="save" class="btn__save">Save</button>
+      <button @click="clearAll" class="btn btn--primary">Clear all</button>
+      <button v-if="album" @click="save" class="btn btn--primary">Save</button>
     </div>
     <ScrollToTop />
   </section>
@@ -37,6 +37,7 @@ export default {
   data() {
     return {
       album: null,
+      userAlbum: null,
       selected: [],
     };
   },
@@ -67,7 +68,7 @@ export default {
       const userAlbum = user.albums.find((a) => a.albumId === albumId);
 
       this.userAlbum = userAlbum;
-      this.selected = userAlbum?.missingStickers || [];
+      this.selected = userAlbum?.duplicateStickers || [];
     },
 
     toggleSticker(num) {
